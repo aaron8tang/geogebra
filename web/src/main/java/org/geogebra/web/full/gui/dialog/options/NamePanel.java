@@ -186,6 +186,7 @@ class NamePanel extends OptionPanel
 		textLabelsModel = new GeoTextLabelsModel(app);
 		textLabels = new ListBoxPanel(app.getLocalization(), "");
 		textLabels.setModel(textLabelsModel);
+		textLabelsModel.setListener(textLabels);
 	}
 
 	@Override
@@ -251,6 +252,7 @@ class NamePanel extends OptionPanel
 						? loc.getMenu("Button.Caption")
 						: loc.getMenu("Button.Caption") + ":");
 		captionAsGeoTextCheck.setLabels();
+		textLabels.setLabels();
 	}
 
 	@Override
@@ -343,7 +345,7 @@ class NamePanel extends OptionPanel
 	@Override
 	public OptionPanel updatePanel(Object[] geos) {
 		captionAsGeoTextCheck.updatePanel(geos);
-		textLabelsModel.updateMPanel(geos);
+		textLabels.updatePanel(geos);
 		return super.updatePanel(geos);
 	}
 }

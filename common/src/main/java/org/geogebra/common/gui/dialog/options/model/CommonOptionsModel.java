@@ -54,4 +54,15 @@ public abstract class CommonOptionsModel<T> extends OptionsModel {
 		this.listener = listener;
 	}
 
+	public void fillModes(Localization loc) {
+		if (listener == null) {
+			return;
+		}
+
+		for (T item : getChoices(loc)) {
+			listener.addItem(item.toString());
+		}
+	}
+
+
 }
