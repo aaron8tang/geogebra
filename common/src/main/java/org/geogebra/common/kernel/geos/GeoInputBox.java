@@ -26,7 +26,8 @@ import com.himamis.retex.editor.share.util.Unicode;
  * @author Michael
  *
  */
-public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignment {
+public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignment,
+	CaptionAsGeoText {
 
 	private static final int defaultLength = 20;
 
@@ -45,6 +46,8 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	private @Nonnull InputBoxProcessor inputBoxProcessor;
 	private @Nonnull InputBoxRenderer inputBoxRenderer;
 	private String tempUserDisplayInput;
+	private boolean geoTextAsCaptionEnabled = false;
+	private GeoText geoTextAsCaption;
 
 	/**
 	 * Creates new text field
@@ -511,5 +514,20 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	public void clearTempUserInput() {
 		this.tempUserDisplayInput = null;
 		inputBoxRenderer.tempUserEvalInput = null;
+	}
+
+	@Override
+	public void setGeoTextAsCaptionEnabled(boolean enabled) {
+		geoTextAsCaptionEnabled = enabled;
+	}
+
+	@Override
+	public boolean isGeoTextAsCaptionEnabled() {
+		return geoTextAsCaptionEnabled;
+	}
+
+	@Override
+	public GeoText getGeoTextAsCaption() {
+		return null;
 	}
 }
