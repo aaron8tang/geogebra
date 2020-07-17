@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.geos.CaptionAsGeoText;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.Localization;
@@ -42,6 +43,8 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 
 	@Override
 	protected boolean isValidAt(int index) {
-		return false;
+		GeoElement geo = getGeoAt(index);
+		return geo instanceof CaptionAsGeoText
+				&& ((CaptionAsGeoText) geo).isGeoTextAsCaptionEnabled();
 	}
 }
