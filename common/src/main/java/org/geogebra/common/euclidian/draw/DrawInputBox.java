@@ -427,7 +427,7 @@ public class DrawInputBox extends CanvasDrawable {
 		highlightLabel(g2, latexLabel);
 		if (geo.isLabelVisible()) {
 			if (geoInputBox.isDynamicCaptionEnabled()) {
-				drawLabelAsGeoText(g2);
+				drawDynamicCaption(g2);
 			} else {
 				drawLabel(g2, getGeoInputBox(), labelDesc);
 			}
@@ -443,21 +443,42 @@ public class DrawInputBox extends CanvasDrawable {
 		}
 	}
 
-	private void drawLabelAsGeoText(GGraphics2D g2) {
-		if (geoInputBox.getDynamicCaption() == null) {
+	private void drawDynamicCaption(GGraphics2D g2) {
+		GeoText dynamicCaption = geoInputBox.getDynamicCaption();
+		if (dynamicCaption == null) {
 			return;
 		}
-
-		GeoText text = geoInputBox.getDynamicCaption().copy();
+		measureLabel(g2, geo, "");
+		GeoText text = dynamicCaption.copy();
 		text.setAbsoluteScreenLocActive(true);
-		text.setAbsoluteScreenLoc(geoInputBox.getAbsoluteScreenLocX(),
-				geoInputBox.getAbsoluteScreenLocY());
-		DrawText drawText = new DrawText(view, text);
-		drawText.draw(g2);
+		int x = xLabel - labelSize.x;
+		int y = labelSize.y > boxHeight
+				? (int) getyLabel() + (boxHeight - labelSize.y) / 2
+				: (int) getyLabel() - (boxHeight - labelSize.y) / 2;
+		text.setAbsoluteScreenLoc(x, y);
+		DrawText drawDynamicCaption = new DrawText(view, text);
+		GFont gFont = getLabelFont().deriveFont(text.getFontStyle(),
+				getLabelFont().getSize() * text.getFontSizeMultiplier());
+		g2.setFont(gFont);
+		drawDynamicCaption.draw(g2);
 	}
 
 	private boolean recomputeSize() {
 		return measureLabel(view.getGraphicsForPen(), getGeoInputBox(), labelDesc);
+	}
+
+	@Override
+	protected boolean measureLabel(GGraphics2D g2, GeoElement geo0, String text) {
+		if (geoInputBox.isDynamicCaptionEnabled()) {
+			GeoText caption = geoInputBox.getDynamicCaption();
+			DrawText drawable = (DrawText) view.getDrawableFor(caption);
+			labelSize.x = (int) drawable.getBounds().getWidth();
+			labelSize.y = (int) drawable.getBounds().getHeight();
+			calculateBoxBounds();
+			return caption.isLaTeX();
+		}
+
+		return super.measureLabel(g2, geo0, text);
 	}
 
 	@Override
