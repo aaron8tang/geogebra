@@ -2098,6 +2098,8 @@ public class ConsElementXMLHandler {
 				break;
 			case "forceReflexAngle":
 				handleForceReflexAngle(attrs);
+			case "geoCaption":
+				handleGeoCaption(attrs);
 				break;
 			case "fading":
 				handleFading(attrs);
@@ -2242,6 +2244,22 @@ public class ConsElementXMLHandler {
 			}
 		}
 
+	}
+
+	private void handleGeoCaption(LinkedHashMap<String, String> attrs) {
+		if (!(geo instanceof GeoInputBox)) {
+			Log.error("wrong element type for <contentSize>: " + geo.getClass());
+			return;
+		}
+		GeoInputBox inputBox = (GeoInputBox)geo;
+		String label = attrs.get("geoCaption");
+		GeoElement caption = geo.getApp().getKernel().lookupLabel(label);
+		if (caption instanceof GeoText) {
+			inputBox.setGeoTextAsCaptionEnabled(true);
+			inputBox.setGeoTextAsCaption(((GeoText) caption));
+		} else {
+			Log.debug("no loaded text");
+		}
 	}
 
 	private void handleContentSize(LinkedHashMap<String, String> attrs) {
