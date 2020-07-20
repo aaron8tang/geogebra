@@ -32,4 +32,8 @@ public interface CaptionAsGeoText extends GeoElementND {
 	 * @param caption to set.
 	 */
 	void setGeoTextAsCaption(GeoText caption);
+
+	void setCaptionTextLabel(String label);
+
+	void checkCaptionTextLabel();
 }

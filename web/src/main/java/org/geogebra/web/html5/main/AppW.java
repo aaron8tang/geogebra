@@ -41,6 +41,7 @@ import org.geogebra.common.kernel.commands.Commands;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoElementGraphicsAdapter;
 import org.geogebra.common.kernel.geos.GeoImage;
+import org.geogebra.common.kernel.geos.GeoInputBox;
 import org.geogebra.common.kernel.geos.GeoNumeric;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.AppConfig;
@@ -829,6 +830,7 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 
 			setCurrentFile(archiveContent);
 			afterLoadFileAppOrNot(asSlide);
+			checkInputBoxes();
 			if (!hasMacroToRestore()) {
 				getGuiManager().refreshCustomToolsInToolBar();
 			}
@@ -847,6 +849,15 @@ public abstract class AppW extends App implements SetLabels, HasLanguage {
 		imageLoader.load();
 	}
 
+	protected void checkInputBoxes() {
+		for (GeoElement geo : kernel.getConstruction().getGeoSetConstructionOrder()) {
+			if (geo.isGeoInputBox()) {
+				GeoInputBox inputBox = (GeoInputBox) geo;
+				inputBox.checkCaptionTextLabel();
+			}
+		}
+	}
+	
 	private void runAfterLoadImages(GgbArchive def, boolean asSlide) {
 		try {
 			setHideConstructionProtocolNavigation();

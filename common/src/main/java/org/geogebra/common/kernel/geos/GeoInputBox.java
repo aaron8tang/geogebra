@@ -16,6 +16,7 @@ import org.geogebra.common.kernel.geos.properties.TextAlignment;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.kernel.kernelND.GeoVectorND;
 import org.geogebra.common.plugin.GeoClass;
+import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.TextObject;
 import org.geogebra.common.util.debug.Log;
 
@@ -49,6 +50,7 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	private String tempUserDisplayInput;
 	private boolean geoTextAsCaptionEnabled = false;
 	private GeoText geoTextAsCaption;
+	private String captionTextLabel = "";
 
 	/**
 	 * Creates new text field
@@ -542,5 +544,21 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	public void setGeoTextAsCaption(GeoText caption) {
 		geoTextAsCaption = caption;
 		Log.debug("Caption is: " + caption);
+	}
+
+	@Override
+	public void setCaptionTextLabel(String label) {
+		captionTextLabel = label;
+	}
+
+	@Override
+	public void checkCaptionTextLabel() {
+		if (StringUtil.empty(captionTextLabel)) {
+			return;
+		}
+		GeoElement geo = kernel.lookupLabel(captionTextLabel);
+		if (geo instanceof GeoText) {
+			setGeoTextAsCaption((GeoText) geo);
+		}
 	}
 }
