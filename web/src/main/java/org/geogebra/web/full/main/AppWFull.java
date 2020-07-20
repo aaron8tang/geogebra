@@ -1484,7 +1484,6 @@ public class AppWFull extends AppW implements HasKeyboard, MenuViewListener {
 				getAsyncManager().loadAllCommands();
 				break;
 			}
-
 		}
 
 		if (!getLAF().isSmart()) {
