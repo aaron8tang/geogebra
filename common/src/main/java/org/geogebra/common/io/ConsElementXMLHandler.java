@@ -2253,13 +2253,8 @@ public class ConsElementXMLHandler {
 		}
 		GeoInputBox inputBox = (GeoInputBox)geo;
 		String label = attrs.get("geoCaption");
-		GeoElement caption = geo.getApp().getKernel().lookupLabel(label);
-		if (caption instanceof GeoText) {
-			inputBox.setGeoTextAsCaptionEnabled(true);
-			inputBox.setGeoTextAsCaption(((GeoText) caption));
-		} else {
-			Log.debug("no loaded text");
-		}
+		inputBox.setCaptionTextLabel(label);
+
 	}
 
 	private void handleContentSize(LinkedHashMap<String, String> attrs) {
