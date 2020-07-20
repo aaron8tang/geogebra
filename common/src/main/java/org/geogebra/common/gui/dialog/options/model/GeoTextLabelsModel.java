@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.geogebra.common.kernel.Construction;
 import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.kernel.geos.CaptionAsGeoText;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInputBox;
 import org.geogebra.common.kernel.geos.GeoText;
+import org.geogebra.common.kernel.geos.HasDynamicCaption;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.Localization;
 
@@ -39,7 +39,7 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 	@Override
 	protected void apply(int index, String value) {
 		GeoText caption = (GeoText) kernel.lookupLabel(value);
-		((CaptionAsGeoText) getGeoAt(index)).setGeoTextAsCaption(caption);
+		((HasDynamicCaption) getGeoAt(index)).setDynamicCaption(caption);
 		getGeoAt(0).updateRepaint();
 	}
 
@@ -51,13 +51,13 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 	@Override
 	protected boolean isValidAt(int index) {
 		GeoElement geo = getGeoAt(index);
-		return geo instanceof CaptionAsGeoText
-				&& ((CaptionAsGeoText) geo).isGeoTextAsCaptionEnabled();
+		return geo instanceof HasDynamicCaption
+				&& ((HasDynamicCaption) geo).isDynamicCaptionEnabled();
 	}
 
 	@Override
 	public void updateProperties() {
-		GeoText caption = ((GeoInputBox) getGeoAt(0)).getGeoTextAsCaption();
+		GeoText caption = ((GeoInputBox) getGeoAt(0)).getDynamicCaption();
 		if (caption == null) {
 			return;
 		}

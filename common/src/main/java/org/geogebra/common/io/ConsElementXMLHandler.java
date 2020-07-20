@@ -48,6 +48,7 @@ import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.geos.GeoVec3D;
 import org.geogebra.common.kernel.geos.GeoVideo;
 import org.geogebra.common.kernel.geos.HasAlignment;
+import org.geogebra.common.kernel.geos.HasDynamicCaption;
 import org.geogebra.common.kernel.geos.HasSymbolicMode;
 import org.geogebra.common.kernel.geos.LimitedPath;
 import org.geogebra.common.kernel.geos.PointProperties;
@@ -106,6 +107,7 @@ public class ConsElementXMLHandler {
 	private LinkedList<GeoExpPair> dynamicColorList = new LinkedList<>();
 	private LinkedList<GeoExpPair> animationSpeedList = new LinkedList<>();
 	private LinkedList<GeoExpPair> animationStepList = new LinkedList<>();
+	private LinkedList<GeoExpPair> dynamicCaptionList = new LinkedList<>();
 	private LinkedList<GeoElement> animatingList = new LinkedList<>();
 	private LinkedList<GeoNumericMinMax> minMaxList = new LinkedList<>();
 	private boolean lineStyleTagProcessed;
@@ -2098,8 +2100,8 @@ public class ConsElementXMLHandler {
 				break;
 			case "forceReflexAngle":
 				handleForceReflexAngle(attrs);
-			case "geoCaption":
-				handleGeoCaption(attrs);
+			case "dynamicCaption":
+				handleDynamicCaption(attrs);
 				break;
 			case "fading":
 				handleFading(attrs);
@@ -2246,15 +2248,20 @@ public class ConsElementXMLHandler {
 
 	}
 
-	private void handleGeoCaption(LinkedHashMap<String, String> attrs) {
+	private void handleDynamicCaption(LinkedHashMap<String, String> attrs) {
 		if (!(geo instanceof GeoInputBox)) {
-			Log.error("wrong element type for <contentSize>: " + geo.getClass());
+			Log.error("wrong element type for <dynamicCaption>: " + geo.getClass());
 			return;
 		}
-		GeoInputBox inputBox = (GeoInputBox)geo;
-		String label = attrs.get("geoCaption");
-		inputBox.setCaptionTextLabel(label);
-
+		try {
+			String dynamicCaption = attrs.get("val");
+			if (dynamicCaption != null) {
+				dynamicCaptionList
+						.add(new GeoExpPair(geo, dynamicCaption));
+			}
+		} catch (RuntimeException e) {
+			Log.error("malformed <dynamicCaption>");
+		}
 	}
 
 	private void handleContentSize(LinkedHashMap<String, String> attrs) {
@@ -2321,6 +2328,29 @@ public class ConsElementXMLHandler {
 			addError("Invalid linked geo " + e.toString());
 		}
 		linkedGeoList.clear();
+	}
+
+
+	private void processDynamicCaptionList() {
+		try {
+			Iterator<GeoExpPair> it = dynamicCaptionList.iterator();
+			while (it.hasNext()) {
+				GeoExpPair pair = it.next();
+				GeoElement caption = xmlHandler.kernel.lookupLabel(pair.exp);
+				if (caption.isGeoText()) {
+					HasDynamicCaption text = (HasDynamicCaption) pair.geoElement;
+					text.setDynamicCaptionEnabled(true);
+					text.setDynamicCaption((GeoText) caption);
+				} else {
+					Log.error("dynamicCaption is not a GeoText");
+					break;
+				}
+			}
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		} finally {
+			dynamicCaptionList.clear();
+		}
 	}
 
 	private void processShowObjectConditionList() {
@@ -2470,6 +2500,7 @@ public class ConsElementXMLHandler {
 		processLinkedGeoList();
 		processShowObjectConditionList();
 		processDynamicColorList();
+		processDynamicCaptionList();
 		processAnimationSpeedList();
 		processAnimationStepList();
 		processMinMaxList();

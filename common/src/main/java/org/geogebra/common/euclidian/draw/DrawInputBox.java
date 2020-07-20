@@ -426,7 +426,7 @@ public class DrawInputBox extends CanvasDrawable {
 
 		highlightLabel(g2, latexLabel);
 		if (geo.isLabelVisible()) {
-			if (geoInputBox.isGeoTextAsCaptionEnabled()) {
+			if (geoInputBox.isDynamicCaptionEnabled()) {
 				drawLabelAsGeoText(g2);
 			} else {
 				drawLabel(g2, getGeoInputBox(), labelDesc);
@@ -444,11 +444,11 @@ public class DrawInputBox extends CanvasDrawable {
 	}
 
 	private void drawLabelAsGeoText(GGraphics2D g2) {
-		if (geoInputBox.getGeoTextAsCaption() == null) {
+		if (geoInputBox.getDynamicCaption() == null) {
 			return;
 		}
 
-		GeoText text = geoInputBox.getGeoTextAsCaption().copy();
+		GeoText text = geoInputBox.getDynamicCaption().copy();
 		text.setAbsoluteScreenLocActive(true);
 		text.setAbsoluteScreenLoc(geoInputBox.getAbsoluteScreenLocX(),
 				geoInputBox.getAbsoluteScreenLocY());
