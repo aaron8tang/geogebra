@@ -31,17 +31,10 @@ public abstract class CommonOptionsModel<T> extends OptionsModel {
 	public abstract List<T> getChoices(Localization loc);
 
 
-		@Override
+	@Override
 	public void updateProperties() {
 		T value0 = getValueAt(0);
-		boolean isEqual = true;
-
-		for (int i = 0; i < getGeosLength(); i++) {
-			if (value0 != getValueAt(i)) {
-				isEqual = false;
-			}
-		}
-		listener.setSelectedIndex(isEqual ? 0 : -1);
+		listener.setSelectedIndex(getChoices(app.getLocalization()).indexOf(value0));
 	}
 
 

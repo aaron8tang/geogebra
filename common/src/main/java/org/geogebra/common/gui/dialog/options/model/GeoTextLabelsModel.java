@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geogebra.common.kernel.Construction;
+import org.geogebra.common.kernel.Kernel;
 import org.geogebra.common.kernel.geos.CaptionAsGeoText;
 import org.geogebra.common.kernel.geos.GeoElement;
+import org.geogebra.common.kernel.geos.GeoInputBox;
+import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.Localization;
 
@@ -13,10 +16,12 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 
 	private final Construction construction;
 	private final List<String> choices;
+	private final Kernel kernel;
 
 	public GeoTextLabelsModel(App app) {
 		super(app);
-		construction = app.getKernel().getConstruction();
+		kernel = app.getKernel();
+		construction = kernel.getConstruction();
 		choices = new ArrayList<>();
 	}
 
@@ -33,7 +38,9 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 
 	@Override
 	protected void apply(int index, String value) {
-
+		GeoText caption = (GeoText) kernel.lookupLabel(value);
+		((CaptionAsGeoText) getGeoAt(index)).setGeoTextAsCaption(caption);
+		getGeoAt(0).updateRepaint();
 	}
 
 	@Override
@@ -46,5 +53,17 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 		GeoElement geo = getGeoAt(index);
 		return geo instanceof CaptionAsGeoText
 				&& ((CaptionAsGeoText) geo).isGeoTextAsCaptionEnabled();
+	}
+
+	@Override
+	public void updateProperties() {
+		GeoText caption = ((GeoInputBox) getGeoAt(0)).getGeoTextAsCaption();
+		if (caption == null) {
+			return;
+		}
+
+		String textLabel = caption.getLabelSimple();
+		int index = getChoices(app.getLocalization()).indexOf(textLabel);
+		getListener().setSelectedIndex(index);
 	}
 }

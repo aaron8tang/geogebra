@@ -29,6 +29,7 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoAngle;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInputBox;
+import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.util.StringUtil;
 
@@ -425,7 +426,11 @@ public class DrawInputBox extends CanvasDrawable {
 
 		highlightLabel(g2, latexLabel);
 		if (geo.isLabelVisible()) {
-			drawLabel(g2, getGeoInputBox(), labelDesc);
+			if (geoInputBox.isGeoTextAsCaptionEnabled()) {
+				drawLabelAsGeoText(g2);
+			} else {
+				drawLabel(g2, getGeoInputBox(), labelDesc);
+			}
 		}
 
 		g2.setFont(font);
@@ -436,6 +441,19 @@ public class DrawInputBox extends CanvasDrawable {
 		if (editing && view.getSymbolicEditor() != null) {
 			view.getSymbolicEditor().repaintBox(g2);
 		}
+	}
+
+	private void drawLabelAsGeoText(GGraphics2D g2) {
+		if (geoInputBox.getGeoTextAsCaption() == null) {
+			return;
+		}
+
+		GeoText text = geoInputBox.getGeoTextAsCaption().copy();
+		text.setAbsoluteScreenLocActive(true);
+		text.setAbsoluteScreenLoc(geoInputBox.getAbsoluteScreenLocX(),
+				geoInputBox.getAbsoluteScreenLocY());
+		DrawText drawText = new DrawText(view, text);
+		drawText.draw(g2);
 	}
 
 	private boolean recomputeSize() {

@@ -4,6 +4,7 @@ import org.geogebra.common.gui.dialog.options.model.CommonOptionsModel;
 import org.geogebra.common.gui.dialog.options.model.IComboListener;
 import org.geogebra.common.gui.dialog.options.model.MultipleOptionsModel;
 import org.geogebra.common.main.Localization;
+import org.geogebra.common.util.StringUtil;
 import org.geogebra.web.html5.gui.util.FormLabel;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -50,15 +51,29 @@ public class ListBoxPanel extends OptionPanel implements IComboListener {
 	}
 
 	protected void onListBoxChange() {
-		getMultipleModel().applyChanges(getListBox().getSelectedIndex());
+		if (isCommonOptionsModel()) {
+			((CommonOptionsModel) getModel()).applyChanges(
+					getListBox().getSelectedValue());
+		} else {
+			getMultipleModel().applyChanges(getListBox().getSelectedIndex());
+		}
+	}
+
+	protected boolean isCommonOptionsModel() {
+		return getModel() instanceof CommonOptionsModel;
 	}
 
 	@Override
 	public void setLabels() {
-		getLabel().setText(getTitle() + ":");
+		if (StringUtil.empty(getTitle())) {
+			getLabel().setText("");
+		} else {
+			getLabel().setText(getTitle() + ":");
+		}
+
 		int idx = getListBox().getSelectedIndex();
 		getListBox().clear();
-		if (getModel() instanceof CommonOptionsModel) {
+		if (isCommonOptionsModel()) {
 			((CommonOptionsModel) getModel()).fillModes(loc);
 		} else {
 			getMultipleModel().fillModes(loc);
