@@ -346,6 +346,15 @@ public class DrawInputBox extends CanvasDrawable {
 	}
 
 	@Override
+	protected void highlightLabel(GGraphics2D g2, boolean latex) {
+		if (drawDynamicCaption.isEnabled()) {
+			drawDynamicCaption.highlightLabel(g2);
+		} else {
+			super.highlightLabel(g2, latex);
+		}
+	}
+
+	@Override
 	final public void draw(GGraphics2D g2) {
 		if (isVisible) {
             String txt = getGeoInputBox().getText();
