@@ -11,6 +11,8 @@ public class DrawDynamicCaption {
 	private DrawText drawTextCaption;
 	private EuclidianView view;
 	private DrawInputBox drawInputBox;
+	private int captionWidth;
+	private int captionHeight;
 
 	public DrawDynamicCaption(EuclidianView view,
 			DrawInputBox drawInputBox) {
@@ -25,17 +27,20 @@ public class DrawDynamicCaption {
 	}
 
 	void draw(GGraphics2D g2) {
-		update();
-		measureCaption();
-		positionDynamicCaption();
 		drawTextCaption.draw(g2);
 	}
 
-	private void update() {
-		if (captionText == null) {
+	public void update() {
+		if (!isEnabled() || captionText == null) {
 			return;
 		}
 
+		updateDrawTextCaption();
+		positionDynamicCaption();
+		positionDynamicCaption();
+	}
+
+	private void updateDrawTextCaption() {
 		GeoText caption = captionText.copy();
 		caption.setFontSizeMultiplier(inputBox.getFontSizeMultiplier());
 		caption.setEuclidianVisible(true);
@@ -43,22 +48,21 @@ public class DrawDynamicCaption {
 		drawTextCaption = new DrawText(view, caption);
 	}
 
-	private void measureCaption() {
+	public boolean measureCaption() {
 		if (drawTextCaption == null) {
-			return;
+			return false;
 		}
 
-		drawInputBox.labelSize.x = (int) drawTextCaption.getBounds().getWidth();
-		drawInputBox.labelSize.y = (int) drawTextCaption.getBounds().getHeight();
+		captionWidth = (int) drawTextCaption.getBounds().getWidth();
+		captionHeight = (int) drawTextCaption.getBounds().getHeight();
 		drawInputBox.calculateBoxBounds();
-
+		return captionText.isLaTeX();
 	}
+
 	private void positionDynamicCaption() {
-		int x = drawInputBox.xLabel - drawInputBox.labelSize.x;
-		int y =  (int) drawInputBox.getyLabel()
-				+ (drawInputBox.boxHeight - drawInputBox.labelSize.y) / 2;
-		drawTextCaption.xLabel = x;
-		drawTextCaption.yLabel = y;
+		int x = drawInputBox.xLabel ;
+		int y = drawInputBox.yLabel;
+		drawTextCaption.xLabel = x - captionWidth;
+		drawTextCaption.yLabel = y - captionHeight / 2;
 	}
-
 }
