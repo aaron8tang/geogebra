@@ -248,6 +248,7 @@ public class DrawInputBox extends CanvasDrawable {
 				oldCaption = caption;
 				labelDesc = caption; // GeoElement.indicesToHTML(caption, true);
 			}
+
 		}
 
 		setLabelFontSize((int) (view.getFontSize()
@@ -263,6 +264,8 @@ public class DrawInputBox extends CanvasDrawable {
 
 		xLabel = getGeoInputBox().getScreenLocX(view);
 		yLabel = getGeoInputBox().getScreenLocY(view);
+
+		drawDynamicCaption.update();
 		labelRectangle.setBounds(xLabel, yLabel, getPreferredWidth(), getPreferredHeight());
 
 		view.getViewTextField().setBoxBounds(labelRectangle);
@@ -427,11 +430,7 @@ public class DrawInputBox extends CanvasDrawable {
 
 		highlightLabel(g2, latexLabel);
 		if (geo.isLabelVisible()) {
-			if (drawDynamicCaption.isEnabled()) {
-				drawDynamicCaption.draw(g2);
-			} else {
-				drawLabel(g2, getGeoInputBox(), labelDesc);
-			}
+			drawLabel(g2, getGeoInputBox(), labelDesc);
 		}
 
 		g2.setFont(font);
@@ -451,7 +450,9 @@ public class DrawInputBox extends CanvasDrawable {
 
 	@Override
 	protected boolean measureLabel(GGraphics2D g2, GeoElement geo0, String text) {
-		return super.measureLabel(g2, geo0, text);
+		return drawDynamicCaption.isEnabled()
+				? drawDynamicCaption.measureCaption()
+				: super.measureLabel(g2, geo0, text);
 	}
 
 	@Override
@@ -470,7 +471,9 @@ public class DrawInputBox extends CanvasDrawable {
 	}
 
 	private void drawLabel(GGraphics2D g2, GeoElement geo0, String text) {
-		if (isLatexString(text)) {
+		if (drawDynamicCaption.isEnabled()) {
+			drawDynamicCaption.draw(g2);
+		} else if (isLatexString(text)) {
 			labelDimension = drawLatex(g2, geo0, getLabelFont(), text, xLabel, getLabelTop());
 		} else {
 			g2.setPaint(geo.getObjectColor());
