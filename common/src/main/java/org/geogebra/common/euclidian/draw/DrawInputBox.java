@@ -29,7 +29,6 @@ import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoAngle;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.kernel.geos.GeoInputBox;
-import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.util.StringUtil;
 
@@ -64,6 +63,7 @@ public class DrawInputBox extends CanvasDrawable {
 	private GFont textFont;
 	private TextRenderer textRenderer;
 	private GDimension labelDimension = null;
+	private DrawDynamicCaption drawDynamicCaption;
 
 	/**
 	 * @param view
@@ -82,6 +82,7 @@ public class DrawInputBox extends CanvasDrawable {
 
 		}
 		textFont = view.getFont();
+		drawDynamicCaption = new DrawDynamicCaption(view, this);
 		update();
 	}
 
@@ -426,8 +427,8 @@ public class DrawInputBox extends CanvasDrawable {
 
 		highlightLabel(g2, latexLabel);
 		if (geo.isLabelVisible()) {
-			if (geoInputBox.isDynamicCaptionEnabled()) {
-				drawDynamicCaption(g2);
+			if (drawDynamicCaption.isEnabled()) {
+				drawDynamicCaption.draw(g2);
 			} else {
 				drawLabel(g2, getGeoInputBox(), labelDesc);
 			}
@@ -443,25 +444,6 @@ public class DrawInputBox extends CanvasDrawable {
 		}
 	}
 
-	private void drawDynamicCaption(GGraphics2D g2) {
-		GeoText dynamicCaption = geoInputBox.getDynamicCaption();
-		if (dynamicCaption == null) {
-			return;
-		}
-		measureLabel(g2, geo, "");
-		GeoText text = dynamicCaption.copy();
-		text.setAbsoluteScreenLocActive(true);
-		int x = xLabel - labelSize.x;
-		int y = labelSize.y > boxHeight
-				? (int) getyLabel() + (boxHeight - labelSize.y) / 2
-				: (int) getyLabel() - (boxHeight - labelSize.y) / 2;
-		text.setAbsoluteScreenLoc(x, y);
-		DrawText drawDynamicCaption = new DrawText(view, text);
-		GFont gFont = getLabelFont().deriveFont(text.getFontStyle(),
-				getLabelFont().getSize() * text.getFontSizeMultiplier());
-		g2.setFont(gFont);
-		drawDynamicCaption.draw(g2);
-	}
 
 	private boolean recomputeSize() {
 		return measureLabel(view.getGraphicsForPen(), getGeoInputBox(), labelDesc);
@@ -469,15 +451,6 @@ public class DrawInputBox extends CanvasDrawable {
 
 	@Override
 	protected boolean measureLabel(GGraphics2D g2, GeoElement geo0, String text) {
-		if (geoInputBox.isDynamicCaptionEnabled()) {
-			GeoText caption = geoInputBox.getDynamicCaption();
-			DrawText drawable = (DrawText) view.getDrawableFor(caption);
-			labelSize.x = (int) drawable.getBounds().getWidth();
-			labelSize.y = (int) drawable.getBounds().getHeight();
-			calculateBoxBounds();
-			return caption.isLaTeX();
-		}
-
 		return super.measureLabel(g2, geo0, text);
 	}
 
