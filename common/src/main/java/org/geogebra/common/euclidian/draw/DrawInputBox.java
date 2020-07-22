@@ -348,7 +348,7 @@ public class DrawInputBox extends CanvasDrawable {
 	@Override
 	protected void highlightLabel(GGraphics2D g2, boolean latex) {
 		if (drawDynamicCaption.isEnabled()) {
-			drawDynamicCaption.highlightLabel(g2);
+			drawDynamicCaption.highlightCapion();
 		} else {
 			super.highlightLabel(g2, latex);
 		}
