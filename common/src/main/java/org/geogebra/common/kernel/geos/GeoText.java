@@ -122,6 +122,7 @@ public class GeoText extends GeoElement
 	private boolean symbolicMode;
 	private int totalHeight;
 	private int totalWidth;
+	private ListenerList updateListeners;
 
 	/**
 	 * Creates new text
@@ -137,8 +138,7 @@ public class GeoText extends GeoElement
 		// http://benpryor.com/blog/2008/01/02/dont-call-subclass-methods-from-a-superclass-constructor/
 		setConstructionDefaults(); // init visual settings
 
-		// don't show in algebra view
-		// setAlgebraVisible(false);
+		updateListeners = new ListenerList(kernel);
 	}
 
 	/**
@@ -387,10 +387,8 @@ public class GeoText extends GeoElement
 				&& getLabelSimple().startsWith("altText")) {
 			kernel.getApplication().setAltText();
 		}
-		// if (needsUpdatedBoundingBox) {
-		// kernel.notifyUpdate(this);
-		// }
 
+		updateListeners.notifyUpdate();
 	}
 
 	/**
@@ -1508,6 +1506,14 @@ public class GeoText extends GeoElement
 	@Override
 	public void addAuralName(Localization loc, ScreenReaderBuilder sb) {
 		// only read content, no prefix
+	}
+
+	public void registerUpdateListener(GeoElement geo) {
+		updateListeners.register(geo);
+	}
+
+	public void unregisterUpdateListener(GeoElement geo) {
+		updateListeners.unregister(geo);
 	}
 
 }

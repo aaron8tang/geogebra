@@ -17,7 +17,6 @@ import org.geogebra.common.kernel.kernelND.GeoElementND;
 import org.geogebra.common.kernel.kernelND.GeoVectorND;
 import org.geogebra.common.plugin.GeoClass;
 import org.geogebra.common.util.TextObject;
-import org.geogebra.common.util.debug.Log;
 
 import com.himamis.retex.editor.share.util.Unicode;
 
@@ -540,7 +539,18 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 
 	@Override
 	public void setDynamicCaption(GeoText caption) {
+		if (dynamicCaption != null) {
+			dynamicCaption.unregisterUpdateListener(this);
+		}
 		dynamicCaption = caption;
-		Log.debug("Caption is: " + caption);
+		dynamicCaption.registerUpdateListener(this);
+	}
+
+	@Override
+	public void update(boolean dragging) {
+		super.update(dragging);
+		if (isDynamicCaptionEnabled()) {
+			dynamicCaption.update(dragging);
+		}
 	}
 }
