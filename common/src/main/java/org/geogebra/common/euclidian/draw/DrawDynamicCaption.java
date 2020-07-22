@@ -7,10 +7,10 @@ import org.geogebra.common.kernel.geos.GeoInputBox;
 import org.geogebra.common.kernel.geos.GeoText;
 
 public class DrawDynamicCaption {
-	private GeoText caption;
-	private GeoText captionText;
 	private GeoInputBox inputBox;
-	private DrawText drawTextCaption;
+	private GeoText linkedCaption;
+	private GeoText captionCopy;
+	private DrawText drawCaption =null;
 	private EuclidianView view;
 	private DrawInputBox drawInputBox;
 	private int captionWidth;
@@ -21,7 +21,6 @@ public class DrawDynamicCaption {
 		this.view = view;
 		this.drawInputBox = drawInputBox;
 		this.inputBox = drawInputBox.getGeoInputBox();
-		this.captionText = inputBox.getDynamicCaption();
 	}
 
 	public boolean isEnabled() {
@@ -29,62 +28,77 @@ public class DrawDynamicCaption {
 	}
 
 	void draw(GGraphics2D g2) {
-		positionDynamicCaption();
-		drawTextCaption.draw(g2);
-	}
-
-	public void update() {
-		if (!isEnabled() || captionText == null) {
+		if (drawCaption == null) {
 			return;
 		}
 
-		updateDrawTextCaption();
+		positionDynamicCaption();
+		drawCaption.draw(g2);
+	}
+
+	public void update() {
+		if (!isEnabled()) {
+			return;
+		}
+
+		updateCaption();
 		measureCaption();
 	}
 
-	private void updateDrawTextCaption() {
-		if (caption == null) {
-			caption = captionText.copy();
-			drawTextCaption = new DrawText(view, caption);
-		} else {
-			caption.set(captionText);
-			drawTextCaption.update();
+	private void updateCaption() {
+		if (linkedCaption != inputBox.getDynamicCaption()) {
+			createCopy();
 		}
 
-		caption.setAllVisualPropertiesExceptEuclidianVisible(captionText,
-				false, false);
-		caption.setFontSizeMultiplier(inputBox.getFontSizeMultiplier());
-		caption.setEuclidianVisible(true);
-		caption.setAbsoluteScreenLocActive(true);
+		updateCopy();
+	}
 
+	private void createCopy() {
+		linkedCaption = inputBox.getDynamicCaption();
+		captionCopy = linkedCaption.copy();
+		drawCaption = new DrawText(view, captionCopy);
+	}
+
+	private void updateCopy() {
+		captionCopy.set(inputBox.getDynamicCaption());
+		captionCopy.setAllVisualPropertiesExceptEuclidianVisible(linkedCaption,
+				false, false);
+		captionCopy.setFontSizeMultiplier(inputBox.getFontSizeMultiplier());
+		captionCopy.setEuclidianVisible(true);
+		captionCopy.setAbsoluteScreenLocActive(true);
+		drawCaption.update();
 	}
 
 	public boolean measureCaption() {
-		if (drawTextCaption == null) {
+		if (drawCaption == null) {
 			return false;
 		}
 
-		captionWidth = (int) drawTextCaption.getBounds().getWidth();
-		captionHeight = (int) drawTextCaption.getBounds().getHeight();
+		captionWidth = (int) drawCaption.getBounds().getWidth();
+		captionHeight = (int) drawCaption.getBounds().getHeight();
 		drawInputBox.labelSize.x = captionWidth;
 		drawInputBox.labelSize.y = captionHeight;
 		drawInputBox.calculateBoxBounds();
-		return captionText.isLaTeX();
+		return linkedCaption.isLaTeX();
 	}
 
 	private void positionDynamicCaption() {
-		drawTextCaption.xLabel = drawInputBox.xLabel - captionWidth;
+		drawCaption.xLabel = drawInputBox.xLabel - captionWidth;
 		int middle = drawInputBox.boxTop + drawInputBox.boxHeight / 2;
-		drawTextCaption.yLabel = captionText.isLaTeX()
+		drawCaption.yLabel = linkedCaption.isLaTeX()
 				? middle - captionHeight / 2
 				: drawInputBox.yLabel + drawInputBox.boxHeight;
 	}
 
 	public void highlightCapion() {
-		caption.setBackgroundColor(
+		if (captionCopy == null) {
+			return;
+		}
+
+		captionCopy.setBackgroundColor(
 				isHighlighted()
 				? GColor.LIGHT_GRAY
-				: captionText.getBackgroundColor());
+				: linkedCaption.getBackgroundColor());
 	}
 
 	private boolean isHighlighted() {

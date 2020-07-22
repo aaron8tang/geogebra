@@ -217,6 +217,7 @@ public class DrawInputBox extends CanvasDrawable {
 		} else {
 			textRenderer = new SimpleTextRenderer(view.getApplication(), this);
 		}
+		drawDynamicCaption.update();
 		if (getTextField() == null) {
 			return;
 		}
@@ -265,7 +266,6 @@ public class DrawInputBox extends CanvasDrawable {
 		xLabel = getGeoInputBox().getScreenLocX(view);
 		yLabel = getGeoInputBox().getScreenLocY(view);
 
-		drawDynamicCaption.update();
 		labelRectangle.setBounds(xLabel, yLabel, getPreferredWidth(), getPreferredHeight());
 
 		view.getViewTextField().setBoxBounds(labelRectangle);
