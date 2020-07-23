@@ -63,7 +63,7 @@ public class DrawInputBox extends CanvasDrawable {
 	private GFont textFont;
 	private TextRenderer textRenderer;
 	private GDimension labelDimension = null;
-	private DrawDynamicCaption drawDynamicCaption;
+	private final DrawDynamicCaption drawDynamicCaption;
 
 	/**
 	 * @param view
@@ -348,7 +348,7 @@ public class DrawInputBox extends CanvasDrawable {
 	@Override
 	protected void highlightLabel(GGraphics2D g2, boolean latex) {
 		if (drawDynamicCaption.isEnabled()) {
-			drawDynamicCaption.highlightCapion();
+			drawDynamicCaption.highlightCaption();
 		} else {
 			super.highlightLabel(g2, latex);
 		}
