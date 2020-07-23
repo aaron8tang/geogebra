@@ -10,14 +10,12 @@ public class DrawDynamicCaption {
 	private final GeoInputBox inputBox;
 	private final GeoText captionCopy;
 	private final DrawText drawCaption;
-	private final EuclidianView view;
 	private final DrawInputBox drawInputBox;
 	private int captionWidth;
 	private int captionHeight;
 
 	public DrawDynamicCaption(EuclidianView view,
 			DrawInputBox drawInputBox) {
-		this.view = view;
 		this.drawInputBox = drawInputBox;
 		this.inputBox = drawInputBox.getGeoInputBox();
 		captionCopy = new GeoText(inputBox.cons);
@@ -33,7 +31,8 @@ public class DrawDynamicCaption {
 			return;
 		}
 
-		updateCaptionCopy();
+		update();
+		highlightCaption();
 		positionDynamicCaption();
 		drawCaption.draw(g2);
 	}
@@ -43,12 +42,12 @@ public class DrawDynamicCaption {
 	}
 
 	public void update() {
-//		if (noCaption() || !isEnabled()) {
-//			return;
-//		}
-//
-//		updateCaptionCopy();
-//		measureCaption();
+		if (noCaption() || !isEnabled()) {
+			return;
+		}
+
+		updateCaptionCopy();
+		setLabelSize();
 	}
 
 	private void updateCaptionCopy() {
@@ -65,7 +64,7 @@ public class DrawDynamicCaption {
 		return inputBox.getDynamicCaption();
 	}
 
-	public boolean measureCaption() {
+	public boolean setLabelSize() {
 		if (drawCaption == null || drawCaption.getBounds() == null) {
 			return false;
 		}
@@ -95,5 +94,16 @@ public class DrawDynamicCaption {
 
 	private boolean isHighlighted() {
 		return drawInputBox.isHighlighted();
+	}
+
+	public int getHeight() {
+		return captionHeight;
+	}
+
+	public boolean hit(int x, int y, int hitThreshold) {
+		if (!isEnabled()) {
+			return false;
+		}
+		return drawCaption.hit(x, y, hitThreshold);
 	}
 }
