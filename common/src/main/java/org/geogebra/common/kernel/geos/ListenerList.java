@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.geogebra.common.kernel.Kernel;
-import org.geogebra.common.util.debug.Log;
 
 public class ListenerList implements Iterable<GeoElement> {
 	private ArrayList<GeoElement> geos;
@@ -45,9 +44,7 @@ public class ListenerList implements Iterable<GeoElement> {
 	public void notifyUpdate() {
 		for (GeoElement geo: geos) {
 			kernel.notifyUpdate(geo);
-			Log.debug("[CaptionText] updating " + geo.getLabelSimple());
 		}
-		kernel.notifyRepaint();
 	}
 
 	@Override
