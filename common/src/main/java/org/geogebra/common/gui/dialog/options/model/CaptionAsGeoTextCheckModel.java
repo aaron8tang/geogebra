@@ -27,6 +27,7 @@ public class CaptionAsGeoTextCheckModel extends BooleanOptionModel {
 	public void apply(int index, boolean value) {
 		HasDynamicCaption asGeoText = at(index);
 		asGeoText.setDynamicCaptionEnabled(value);
+		asGeoText.setDynamicCaption(null);
 		asGeoText.updateRepaint();
 	}
 }

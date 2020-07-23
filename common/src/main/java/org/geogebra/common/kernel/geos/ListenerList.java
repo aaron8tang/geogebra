@@ -1,16 +1,18 @@
 package org.geogebra.common.kernel.geos;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.geogebra.common.kernel.Kernel;
+import org.geogebra.common.util.debug.Log;
 
-public class ListenerList {
-	private ArrayList<GeoElement> listeners;
+public class ListenerList implements Iterable<GeoElement> {
+	private ArrayList<GeoElement> geos;
 	private Kernel kernel;
 
 	public ListenerList(Kernel kernel) {
 		this.kernel = kernel;
-		this.listeners = new ArrayList<>();
+		this.geos = new ArrayList<>();
 	}
 
 	/**
@@ -20,7 +22,7 @@ public class ListenerList {
 	 *            geo as the listener
 	 */
 	public void register(GeoElement geo) {
-		listeners.add(geo);
+		geos.add(geo);
 	}
 
 	/**
@@ -30,19 +32,26 @@ public class ListenerList {
 	 *            geo as a listener
 	 */
 	public void unregister(GeoElement geo) {
-		listeners.remove(geo);
+		geos.remove(geo);
 	}
 
 	/**
 	 * Remove all listeners
 	 */
 	public void clear() {
-		listeners.clear();
+		geos.clear();
 	}
 
 	public void notifyUpdate() {
-		for (GeoElement geo: listeners) {
+		for (GeoElement geo: geos) {
 			kernel.notifyUpdate(geo);
+			Log.debug("[CaptionText] updating " + geo.getLabelSimple());
 		}
+		kernel.notifyRepaint();
+	}
+
+	@Override
+	public Iterator<GeoElement> iterator() {
+		return geos.iterator();
 	}
 }

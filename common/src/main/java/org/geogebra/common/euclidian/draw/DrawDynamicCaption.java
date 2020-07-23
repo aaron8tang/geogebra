@@ -7,12 +7,11 @@ import org.geogebra.common.kernel.geos.GeoInputBox;
 import org.geogebra.common.kernel.geos.GeoText;
 
 public class DrawDynamicCaption {
-	private GeoInputBox inputBox;
-	private GeoText linkedCaption;
-	private GeoText captionCopy;
-	private DrawText drawCaption =null;
-	private EuclidianView view;
-	private DrawInputBox drawInputBox;
+	private final GeoInputBox inputBox;
+	private final GeoText captionCopy;
+	private final DrawText drawCaption;
+	private final EuclidianView view;
+	private final DrawInputBox drawInputBox;
 	private int captionWidth;
 	private int captionHeight;
 
@@ -21,6 +20,8 @@ public class DrawDynamicCaption {
 		this.view = view;
 		this.drawInputBox = drawInputBox;
 		this.inputBox = drawInputBox.getGeoInputBox();
+		captionCopy = new GeoText(inputBox.cons);
+		drawCaption = new DrawText(view, captionCopy);
 	}
 
 	public boolean isEnabled() {
@@ -28,40 +29,31 @@ public class DrawDynamicCaption {
 	}
 
 	void draw(GGraphics2D g2) {
-		if (drawCaption == null) {
+		if (noCaption()) {
 			return;
 		}
 
+		updateCaptionCopy();
 		positionDynamicCaption();
 		drawCaption.draw(g2);
 	}
 
+	private boolean noCaption() {
+		return getDynamicCaption() == null;
+	}
+
 	public void update() {
-		if (!isEnabled()) {
-			return;
-		}
-
-		updateCaption();
-		measureCaption();
+//		if (noCaption() || !isEnabled()) {
+//			return;
+//		}
+//
+//		updateCaptionCopy();
+//		measureCaption();
 	}
 
-	private void updateCaption() {
-		if (linkedCaption != inputBox.getDynamicCaption()) {
-			createCopy();
-		}
-
-		updateCopy();
-	}
-
-	private void createCopy() {
-		linkedCaption = inputBox.getDynamicCaption();
-		captionCopy = linkedCaption.copy();
-		drawCaption = new DrawText(view, captionCopy);
-	}
-
-	private void updateCopy() {
-		captionCopy.set(inputBox.getDynamicCaption());
-		captionCopy.setAllVisualPropertiesExceptEuclidianVisible(linkedCaption,
+	private void updateCaptionCopy() {
+		captionCopy.set(getDynamicCaption());
+		captionCopy.setAllVisualPropertiesExceptEuclidianVisible(getDynamicCaption(),
 				false, false);
 		captionCopy.setFontSizeMultiplier(inputBox.getFontSizeMultiplier());
 		captionCopy.setEuclidianVisible(true);
@@ -69,8 +61,12 @@ public class DrawDynamicCaption {
 		drawCaption.update();
 	}
 
+	private GeoText getDynamicCaption() {
+		return inputBox.getDynamicCaption();
+	}
+
 	public boolean measureCaption() {
-		if (drawCaption == null) {
+		if (drawCaption == null || drawCaption.getBounds() == null) {
 			return false;
 		}
 
@@ -79,26 +75,22 @@ public class DrawDynamicCaption {
 		drawInputBox.labelSize.x = captionWidth;
 		drawInputBox.labelSize.y = captionHeight;
 		drawInputBox.calculateBoxBounds();
-		return linkedCaption.isLaTeX();
+		return getDynamicCaption().isLaTeX();
 	}
 
 	private void positionDynamicCaption() {
 		drawCaption.xLabel = drawInputBox.xLabel - captionWidth;
 		int middle = drawInputBox.boxTop + drawInputBox.boxHeight / 2;
-		drawCaption.yLabel = linkedCaption.isLaTeX()
+		drawCaption.yLabel = getDynamicCaption().isLaTeX()
 				? middle - captionHeight / 2
 				: drawInputBox.yLabel + drawInputBox.boxHeight;
 	}
 
-	public void highlightCapion() {
-		if (captionCopy == null) {
-			return;
-		}
-
+	public void highlightCaption() {
 		captionCopy.setBackgroundColor(
 				isHighlighted()
 				? GColor.LIGHT_GRAY
-				: linkedCaption.getBackgroundColor());
+				: getDynamicCaption().getBackgroundColor());
 	}
 
 	private boolean isHighlighted() {

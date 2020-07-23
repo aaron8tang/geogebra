@@ -1516,4 +1516,17 @@ public class GeoText extends GeoElement
 		updateListeners.unregister(geo);
 	}
 
+	@Override
+	public void moveDependencies(GeoElement oldGeo) {
+		if (!oldGeo.isGeoText()) {
+			return;
+		}
+
+		GeoText text = (GeoText) oldGeo;
+		updateListeners.clear();
+		for (GeoElement geo: text.updateListeners) {
+			((HasDynamicCaption) geo).setDynamicCaption(this);
+			registerUpdateListener(geo);
+		}
+	}
 }
