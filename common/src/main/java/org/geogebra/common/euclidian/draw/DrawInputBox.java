@@ -460,7 +460,7 @@ public class DrawInputBox extends CanvasDrawable {
 	@Override
 	protected boolean measureLabel(GGraphics2D g2, GeoElement geo0, String text) {
 		return drawDynamicCaption.isEnabled()
-				? drawDynamicCaption.measureCaption()
+				? drawDynamicCaption.setLabelSize()
 				: super.measureLabel(g2, geo0, text);
 	}
 
@@ -469,6 +469,19 @@ public class DrawInputBox extends CanvasDrawable {
 		return geoInputBox.isSymbolicMode()
 			? getInputFieldBounds().contains(x, y)
 			: super.hitWidgetBounds(x, y);
+	}
+
+	@Override
+	public boolean hit(int x, int y, int hitThreshold) {
+		return super.hit(x, y, hitThreshold)
+				|| drawDynamicCaption.hit(x, y, hitThreshold);
+	}
+
+	@Override
+	protected int getLabelTextHeight() {
+		return drawDynamicCaption.isEnabled()
+				? drawDynamicCaption.getHeight()
+				: super.getLabelTextHeight();
 	}
 
 	/**
