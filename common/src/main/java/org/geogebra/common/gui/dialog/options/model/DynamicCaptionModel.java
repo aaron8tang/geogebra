@@ -13,13 +13,13 @@ import org.geogebra.common.main.App;
 import org.geogebra.common.main.Localization;
 import org.geogebra.common.util.StringUtil;
 
-public class GeoTextLabelsModel extends CommonOptionsModel<String> {
+public class DynamicCaptionModel extends CommonOptionsModel<String> {
 
 	private final Construction construction;
 	private final List<String> choices;
 	private final Kernel kernel;
 
-	public GeoTextLabelsModel(App app) {
+	public DynamicCaptionModel(App app) {
 		super(app);
 		kernel = app.getKernel();
 		construction = kernel.getConstruction();
@@ -47,8 +47,7 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 			GeoText caption = (GeoText) kernel.lookupLabel(value);
 			geo.setDynamicCaption(caption);
 		}
-		getGeoAt(0).update();
-		getGeoAt(0).updateRepaint();
+		geo.updateRepaint();
 	}
 
 	@Override
@@ -71,7 +70,7 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 		}
 
 		String textLabel = caption.getLabelSimple();
-		int index = getChoices(app.getLocalization()).indexOf(textLabel);
+		int index = StringUtil.empty(textLabel) ? 0 :getChoices(app.getLocalization()).indexOf(textLabel);
 		getListener().setSelectedIndex(index);
 	}
 }
