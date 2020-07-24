@@ -3,9 +3,9 @@ package org.geogebra.common.gui.dialog.options.model;
 import org.geogebra.common.kernel.geos.HasDynamicCaption;
 import org.geogebra.common.main.App;
 
-public class CaptionAsGeoTextCheckModel extends BooleanOptionModel {
+public class EnableDynamicCaptionModel extends BooleanOptionModel {
 
-	public CaptionAsGeoTextCheckModel(IBooleanOptionListener listener, App app) {
+	public EnableDynamicCaptionModel(IBooleanOptionListener listener, App app) {
 		super(listener, app);
 	}
 
@@ -27,7 +27,6 @@ public class CaptionAsGeoTextCheckModel extends BooleanOptionModel {
 	public void apply(int index, boolean value) {
 		HasDynamicCaption asGeoText = at(index);
 		asGeoText.setDynamicCaptionEnabled(value);
-		asGeoText.setDynamicCaption(null);
 		asGeoText.updateRepaint();
 	}
 }
