@@ -570,14 +570,15 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 
 	@Override
 	public void clearDynamicCaption() {
-		setDynamicCaption(emptyText);
+		unregisterDynamicCaption();
+		dynamicCaption = emptyText;
 	}
 
 	@Override
 	public void update(boolean dragging) {
-		super.update(dragging);
 		if (isDynamicCaptionEnabled()) {
 			dynamicCaption.update(dragging);
 		}
+		super.update(dragging);
 	}
 }
