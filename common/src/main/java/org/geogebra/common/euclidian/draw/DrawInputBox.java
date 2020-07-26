@@ -217,7 +217,7 @@ public class DrawInputBox extends CanvasDrawable {
 		} else {
 			textRenderer = new SimpleTextRenderer(view.getApplication(), this);
 		}
-		drawDynamicCaption.update();
+
 		if (getTextField() == null) {
 			return;
 		}
@@ -265,6 +265,7 @@ public class DrawInputBox extends CanvasDrawable {
 
 		xLabel = getGeoInputBox().getScreenLocX(view);
 		yLabel = getGeoInputBox().getScreenLocY(view);
+		drawDynamicCaption.update();
 
 		labelRectangle.setBounds(xLabel, yLabel, getPreferredWidth(), getPreferredHeight());
 
@@ -348,7 +349,7 @@ public class DrawInputBox extends CanvasDrawable {
 	@Override
 	protected void highlightLabel(GGraphics2D g2, boolean latex) {
 		if (drawDynamicCaption.isEnabled()) {
-			drawDynamicCaption.highlightCaption();
+			drawDynamicCaption.highlight();
 		} else {
 			super.highlightLabel(g2, latex);
 		}

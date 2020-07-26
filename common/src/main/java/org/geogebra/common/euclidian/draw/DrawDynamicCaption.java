@@ -32,9 +32,17 @@ public class DrawDynamicCaption {
 		}
 
 		update();
-		highlightCaption();
-		positionDynamicCaption();
+		measure(g2);
+		highlight();
+		position();
 		drawCaption.draw(g2);
+	}
+
+	private void measure(GGraphics2D g2) {
+		drawCaption.xLabel = - 100;
+		drawCaption.draw(g2);
+		captionWidth = (int) drawCaption.getBounds().getWidth();
+		captionHeight = (int) drawCaption.getBounds().getHeight();
 	}
 
 	private boolean noCaption() {
@@ -65,27 +73,25 @@ public class DrawDynamicCaption {
 	}
 
 	public boolean setLabelSize() {
-		if (drawCaption == null || drawCaption.getBounds() == null) {
+		if (drawCaption == null) {
 			return false;
 		}
 
-		captionWidth = (int) drawCaption.getBounds().getWidth();
-		captionHeight = (int) drawCaption.getBounds().getHeight();
 		drawInputBox.labelSize.x = captionWidth;
 		drawInputBox.labelSize.y = captionHeight;
 		drawInputBox.calculateBoxBounds();
 		return getDynamicCaption().isLaTeX();
 	}
 
-	private void positionDynamicCaption() {
+	private void position() {
 		drawCaption.xLabel = drawInputBox.xLabel - captionWidth;
 		int middle = drawInputBox.boxTop + drawInputBox.boxHeight / 2;
 		drawCaption.yLabel = getDynamicCaption().isLaTeX()
 				? middle - captionHeight / 2
-				: drawInputBox.yLabel + drawInputBox.boxHeight;
+				: drawInputBox.yLabel + drawInputBox.getTextBottom();
 	}
 
-	public void highlightCaption() {
+	public void highlight() {
 		captionCopy.setBackgroundColor(
 				isHighlighted()
 				? GColor.LIGHT_GRAY
