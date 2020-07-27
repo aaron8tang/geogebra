@@ -17,6 +17,10 @@ public class ListenerList implements Iterable<GeoElement> {
 		this.geos = new ArrayList<>();
 	}
 
+	/**
+	 * Copy constructor
+	 * @param list to copy
+	 */
 	public ListenerList(ListenerList list) {
 		kernel = list.kernel;
 		geos = new ArrayList<>(list.geos);
