@@ -135,8 +135,6 @@ class NamePanel extends OptionPanel
 			}
 		});
 
-		createCaptionAsGeoTextPanel();
-
 		mainWidget = new FlowPanel();
 
 		// name panel
@@ -172,10 +170,6 @@ class NamePanel extends OptionPanel
 		setWidget(mainWidget);
 		updateGUI(true, true);
 	}
-
-	private void createCaptionAsGeoTextPanel() {
-		}
-
 
 	@Override
 	public void focusGained() {

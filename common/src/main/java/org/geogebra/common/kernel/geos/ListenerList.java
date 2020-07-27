@@ -9,6 +9,10 @@ public class ListenerList implements Iterable<GeoElement> {
 	private ArrayList<GeoElement> geos;
 	private Kernel kernel;
 
+	/**
+	 *
+	 * @param kernel {@link Kernel}
+	 */
 	public ListenerList(Kernel kernel) {
 		this.kernel = kernel;
 		this.geos = new ArrayList<>();
@@ -41,6 +45,9 @@ public class ListenerList implements Iterable<GeoElement> {
 		geos.clear();
 	}
 
+	/**
+	 * Notify all listeners to update themselves.
+	 */
 	public void notifyUpdate() {
 		for (GeoElement geo: geos) {
 			kernel.notifyUpdate(geo);
