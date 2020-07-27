@@ -2100,6 +2100,7 @@ public class ConsElementXMLHandler {
 				break;
 			case "forceReflexAngle":
 				handleForceReflexAngle(attrs);
+				break;
 			case "dynamicCaption":
 				handleDynamicCaption(attrs);
 				break;
