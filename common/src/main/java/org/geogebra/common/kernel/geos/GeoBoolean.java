@@ -398,7 +398,8 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 		conditionals.clear();
 		for (GeoElement conditional : geoBoolean.conditionals) {
 			registerConditionListener(conditional);
-		}}
+		}
+	}
 
 	@Override
 	public void setEuclidianVisible(boolean visible) {
