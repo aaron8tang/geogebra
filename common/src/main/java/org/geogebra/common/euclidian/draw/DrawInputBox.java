@@ -63,7 +63,7 @@ public class DrawInputBox extends CanvasDrawable {
 	private GFont textFont;
 	private TextRenderer textRenderer;
 	private GDimension labelDimension = null;
-	private DrawDynamicCaption drawDynamicCaption;
+	private final DrawDynamicCaption drawDynamicCaption;
 
 	/**
 	 * @param view
@@ -217,7 +217,7 @@ public class DrawInputBox extends CanvasDrawable {
 		} else {
 			textRenderer = new SimpleTextRenderer(view.getApplication(), this);
 		}
-		drawDynamicCaption.update();
+
 		if (getTextField() == null) {
 			return;
 		}
@@ -265,6 +265,7 @@ public class DrawInputBox extends CanvasDrawable {
 
 		xLabel = getGeoInputBox().getScreenLocX(view);
 		yLabel = getGeoInputBox().getScreenLocY(view);
+		drawDynamicCaption.update();
 
 		labelRectangle.setBounds(xLabel, yLabel, getPreferredWidth(), getPreferredHeight());
 
@@ -348,7 +349,7 @@ public class DrawInputBox extends CanvasDrawable {
 	@Override
 	protected void highlightLabel(GGraphics2D g2, boolean latex) {
 		if (drawDynamicCaption.isEnabled()) {
-			drawDynamicCaption.highlightCapion();
+			drawDynamicCaption.highlight();
 		} else {
 			super.highlightLabel(g2, latex);
 		}
@@ -460,7 +461,7 @@ public class DrawInputBox extends CanvasDrawable {
 	@Override
 	protected boolean measureLabel(GGraphics2D g2, GeoElement geo0, String text) {
 		return drawDynamicCaption.isEnabled()
-				? drawDynamicCaption.measureCaption()
+				? drawDynamicCaption.setLabelSize()
 				: super.measureLabel(g2, geo0, text);
 	}
 
@@ -469,6 +470,19 @@ public class DrawInputBox extends CanvasDrawable {
 		return geoInputBox.isSymbolicMode()
 			? getInputFieldBounds().contains(x, y)
 			: super.hitWidgetBounds(x, y);
+	}
+
+	@Override
+	public boolean hit(int x, int y, int hitThreshold) {
+		return super.hit(x, y, hitThreshold)
+				|| drawDynamicCaption.hit(x, y, hitThreshold);
+	}
+
+	@Override
+	protected int getLabelTextHeight() {
+		return drawDynamicCaption.isEnabled()
+				? drawDynamicCaption.getHeight()
+				: super.getLabelTextHeight();
 	}
 
 	/**

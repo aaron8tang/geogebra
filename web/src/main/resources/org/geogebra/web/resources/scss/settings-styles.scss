@@ -302,9 +302,16 @@ $shadow-dark: 0px 0px 2px 1px rgba(102, 102, 102, 0.3);
 				}
 			
 				.listBoxPanel {
+            		margin-bottom: 0px;
+            	}
+
+				.listBoxPanel-noLabel {
+					margin-top: 4px;
 					margin-bottom: 0px;
+					margin-left: 12px;
+					background: red;
 				}
-    			
+
     			.propMaterialTab {
     				overflow: auto;
     				padding-right: 8px;

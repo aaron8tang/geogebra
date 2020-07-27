@@ -11,14 +11,15 @@ import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.geos.HasDynamicCaption;
 import org.geogebra.common.main.App;
 import org.geogebra.common.main.Localization;
+import org.geogebra.common.util.StringUtil;
 
-public class GeoTextLabelsModel extends CommonOptionsModel<String> {
+public class DynamicCaptionModel extends CommonOptionsModel<String> {
 
 	private final Construction construction;
 	private final List<String> choices;
 	private final Kernel kernel;
 
-	public GeoTextLabelsModel(App app) {
+	public DynamicCaptionModel(App app) {
 		super(app);
 		kernel = app.getKernel();
 		construction = kernel.getConstruction();
@@ -28,6 +29,7 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 	@Override
 	public List<String> getChoices(Localization loc) {
 		choices.clear();
+		choices.add("");
 		for (GeoElement geo: construction.getGeoSetConstructionOrder()) {
 			if (geo.isGeoText()) {
 				choices.add(geo.getLabelSimple());
@@ -38,9 +40,14 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 
 	@Override
 	protected void apply(int index, String value) {
-		GeoText caption = (GeoText) kernel.lookupLabel(value);
-		((HasDynamicCaption) getGeoAt(index)).setDynamicCaption(caption);
-		getGeoAt(0).updateRepaint();
+		HasDynamicCaption geo = (HasDynamicCaption) getGeoAt(index);
+		if (StringUtil.empty(value)) {
+			geo.clearDynamicCaption();
+		} else {
+			GeoText caption = (GeoText) kernel.lookupLabel(value);
+			geo.setDynamicCaption(caption);
+		}
+		geo.updateRepaint();
 	}
 
 	@Override
@@ -63,7 +70,7 @@ public class GeoTextLabelsModel extends CommonOptionsModel<String> {
 		}
 
 		String textLabel = caption.getLabelSimple();
-		int index = getChoices(app.getLocalization()).indexOf(textLabel);
+		int index = StringUtil.empty(textLabel) ? 0 :getChoices(app.getLocalization()).indexOf(textLabel);
 		getListener().setSelectedIndex(index);
 	}
 }

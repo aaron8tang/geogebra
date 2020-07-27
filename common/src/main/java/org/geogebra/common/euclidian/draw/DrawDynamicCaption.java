@@ -7,20 +7,19 @@ import org.geogebra.common.kernel.geos.GeoInputBox;
 import org.geogebra.common.kernel.geos.GeoText;
 
 public class DrawDynamicCaption {
-	private GeoInputBox inputBox;
-	private GeoText linkedCaption;
-	private GeoText captionCopy;
-	private DrawText drawCaption =null;
-	private EuclidianView view;
-	private DrawInputBox drawInputBox;
+	private final GeoInputBox inputBox;
+	private final GeoText captionCopy;
+	private final DrawText drawCaption;
+	private final DrawInputBox drawInputBox;
 	private int captionWidth;
 	private int captionHeight;
 
 	public DrawDynamicCaption(EuclidianView view,
 			DrawInputBox drawInputBox) {
-		this.view = view;
 		this.drawInputBox = drawInputBox;
 		this.inputBox = drawInputBox.getGeoInputBox();
+		captionCopy = new GeoText(inputBox.cons);
+		drawCaption = new DrawText(view, captionCopy);
 	}
 
 	public boolean isEnabled() {
@@ -28,40 +27,42 @@ public class DrawDynamicCaption {
 	}
 
 	void draw(GGraphics2D g2) {
-		if (drawCaption == null) {
+		if (noCaption()) {
 			return;
 		}
 
-		positionDynamicCaption();
+		update();
+		measure(g2);
+		highlight();
+		position();
 		drawCaption.draw(g2);
 	}
 
+	private void measure(GGraphics2D g2) {
+		drawCaption.xLabel = Integer.MIN_VALUE;
+		drawCaption.yLabel = Integer.MIN_VALUE;
+
+		drawCaption.draw(g2);
+		captionWidth = (int) drawCaption.getBounds().getWidth();
+		captionHeight = (int) drawCaption.getBounds().getHeight();
+	}
+
+	private boolean noCaption() {
+		return getDynamicCaption() == null;
+	}
+
 	public void update() {
-		if (!isEnabled()) {
+		if (noCaption() || !isEnabled()) {
 			return;
 		}
 
-		updateCaption();
-		measureCaption();
+		updateCaptionCopy();
+		setLabelSize();
 	}
 
-	private void updateCaption() {
-		if (linkedCaption != inputBox.getDynamicCaption()) {
-			createCopy();
-		}
-
-		updateCopy();
-	}
-
-	private void createCopy() {
-		linkedCaption = inputBox.getDynamicCaption();
-		captionCopy = linkedCaption.copy();
-		drawCaption = new DrawText(view, captionCopy);
-	}
-
-	private void updateCopy() {
-		captionCopy.set(inputBox.getDynamicCaption());
-		captionCopy.setAllVisualPropertiesExceptEuclidianVisible(linkedCaption,
+	private void updateCaptionCopy() {
+		captionCopy.set(getDynamicCaption());
+		captionCopy.setAllVisualPropertiesExceptEuclidianVisible(getDynamicCaption(),
 				false, false);
 		captionCopy.setFontSizeMultiplier(inputBox.getFontSizeMultiplier());
 		captionCopy.setEuclidianVisible(true);
@@ -69,39 +70,48 @@ public class DrawDynamicCaption {
 		drawCaption.update();
 	}
 
-	public boolean measureCaption() {
+	private GeoText getDynamicCaption() {
+		return inputBox.getDynamicCaption();
+	}
+
+	public boolean setLabelSize() {
 		if (drawCaption == null) {
 			return false;
 		}
 
-		captionWidth = (int) drawCaption.getBounds().getWidth();
-		captionHeight = (int) drawCaption.getBounds().getHeight();
 		drawInputBox.labelSize.x = captionWidth;
 		drawInputBox.labelSize.y = captionHeight;
 		drawInputBox.calculateBoxBounds();
-		return linkedCaption.isLaTeX();
+		return getDynamicCaption().isLaTeX();
 	}
 
-	private void positionDynamicCaption() {
+	private void position() {
 		drawCaption.xLabel = drawInputBox.xLabel - captionWidth;
 		int middle = drawInputBox.boxTop + drawInputBox.boxHeight / 2;
-		drawCaption.yLabel = linkedCaption.isLaTeX()
+		drawCaption.yLabel = getDynamicCaption().isLaTeX()
 				? middle - captionHeight / 2
-				: drawInputBox.yLabel + drawInputBox.boxHeight;
+				: drawInputBox.yLabel + drawInputBox.getTextBottom();
 	}
 
-	public void highlightCapion() {
-		if (captionCopy == null) {
-			return;
-		}
-
+	public void highlight() {
 		captionCopy.setBackgroundColor(
 				isHighlighted()
 				? GColor.LIGHT_GRAY
-				: linkedCaption.getBackgroundColor());
+				: getDynamicCaption().getBackgroundColor());
 	}
 
 	private boolean isHighlighted() {
 		return drawInputBox.isHighlighted();
+	}
+
+	public int getHeight() {
+		return captionHeight;
+	}
+
+	public boolean hit(int x, int y, int hitThreshold) {
+		if (!isEnabled()) {
+			return false;
+		}
+		return drawCaption.hit(x, y, hitThreshold);
 	}
 }

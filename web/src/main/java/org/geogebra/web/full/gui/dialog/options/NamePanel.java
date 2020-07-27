@@ -3,8 +3,6 @@ package org.geogebra.web.full.gui.dialog.options;
 import org.geogebra.common.euclidian.event.FocusListenerDelegate;
 import org.geogebra.common.euclidian.event.KeyEvent;
 import org.geogebra.common.euclidian.event.KeyHandler;
-import org.geogebra.common.gui.dialog.options.model.CaptionAsGeoTextCheckModel;
-import org.geogebra.common.gui.dialog.options.model.GeoTextLabelsModel;
 import org.geogebra.common.gui.dialog.options.model.ObjectNameModel;
 import org.geogebra.common.gui.dialog.options.model.ShowLabelModel;
 import org.geogebra.common.kernel.geos.GeoElement;
@@ -13,7 +11,6 @@ import org.geogebra.common.main.Localization;
 import org.geogebra.common.main.error.ErrorHandler;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.common.util.debug.Log;
-import org.geogebra.web.full.gui.properties.ListBoxPanel;
 import org.geogebra.web.full.gui.properties.OptionPanel;
 import org.geogebra.web.full.gui.view.algebra.InputPanelW;
 import org.geogebra.web.html5.euclidian.EuclidianViewW;
@@ -34,6 +31,7 @@ import com.google.gwt.user.client.ui.Label;
 class NamePanel extends OptionPanel
 		implements ObjectNameModel.IObjectNameListener, ErrorHandler,
 		FocusListenerDelegate {
+	private final DynamicCaptionPanel dynamicCaptionPanel;
 	ObjectNameModel model;
 	private AutoCompleteTextFieldW tfName;
 	private AutoCompleteTextFieldW tfDefinition;
@@ -57,10 +55,6 @@ class NamePanel extends OptionPanel
 	private String redefinitionForFocusLost = "";
 	private AppW app;
 	private ShowLabelModel showLabelModel;
-	private CheckboxPanel captionAsGeoTextCheck;
-	private CaptionAsGeoTextCheckModel asGeoTextCheckModel;
-	private GeoTextLabelsModel textLabelsModel;
-	private ListBoxPanel textLabels;
 
 	/**
 	 *
@@ -163,13 +157,13 @@ class NamePanel extends OptionPanel
 		errorPanel.addStyleName("Dialog-errorPanel");
 		mainWidget.add(errorPanel);
 
+		dynamicCaptionPanel = new DynamicCaptionPanel(app, tfCaption);
 		// caption panel
 		captionPanel = new FlowPanel();
 		captionLabel = new FormLabel("").setFor(inputPanelCap);
 		captionPanel.add(captionLabel);
 		captionPanel.add(inputPanelCap);
-		captionPanel.add(captionAsGeoTextCheck.getWidget());
-		captionPanel.add(textLabels.getWidget());
+		captionPanel.add(dynamicCaptionPanel.getWidget());
 		mainWidget.add(captionPanel);
 
 		nameStrPanel.setStyleName("optionsInput");
@@ -180,14 +174,8 @@ class NamePanel extends OptionPanel
 	}
 
 	private void createCaptionAsGeoTextPanel() {
-		asGeoTextCheckModel = new CaptionAsGeoTextCheckModel(null, app);
-		captionAsGeoTextCheck = new CheckboxPanel("UseTextAsCaption", app.getLocalization(),
-				asGeoTextCheckModel);
-		textLabelsModel = new GeoTextLabelsModel(app);
-		textLabels = new ListBoxPanel(app.getLocalization(), "");
-		textLabels.setModel(textLabelsModel);
-		textLabelsModel.setListener(textLabels);
-	}
+		}
+
 
 	@Override
 	public void focusGained() {
@@ -251,8 +239,7 @@ class NamePanel extends OptionPanel
 				.setText(app.isUnbundledOrWhiteboard()
 						? loc.getMenu("Button.Caption")
 						: loc.getMenu("Button.Caption") + ":");
-		captionAsGeoTextCheck.setLabels();
-		textLabels.setLabels();
+		dynamicCaptionPanel.setLabels();
 	}
 
 	@Override
@@ -344,8 +331,8 @@ class NamePanel extends OptionPanel
 
 	@Override
 	public OptionPanel updatePanel(Object[] geos) {
-		captionAsGeoTextCheck.updatePanel(geos);
-		textLabels.updatePanel(geos);
+		dynamicCaptionPanel.updatePanel(geos);
 		return super.updatePanel(geos);
 	}
+
 }

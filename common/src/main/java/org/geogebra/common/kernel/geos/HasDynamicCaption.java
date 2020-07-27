@@ -29,8 +29,13 @@ public interface HasDynamicCaption extends GeoElementND {
 	GeoText getDynamicCaption();
 
 	/**
-	 * Sets GeoText as dynamix caption.
+	 * Sets GeoText as dynamic caption.
 	 * @param caption to set.
 	 */
 	void setDynamicCaption(GeoText caption);
+
+	/**
+	 * Clears dynamic caption but does not disable it.
+	 */
+	void clearDynamicCaption();
 }

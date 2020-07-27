@@ -48,6 +48,7 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	private String tempUserDisplayInput;
 	private boolean dynamicCaptionEnabled = false;
 	private GeoText dynamicCaption;
+	private static GeoText emptyText;
 
 	/**
 	 * Creates new text field
@@ -58,8 +59,15 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	public GeoInputBox(Construction cons) {
 		super(cons);
 		linkedGeo = new GeoText(cons, "");
-	 	inputBoxRenderer = new InputBoxRenderer(this);
+		createEmptyText(cons);
+		inputBoxRenderer = new InputBoxRenderer(this);
 		inputBoxProcessor = new InputBoxProcessor(this, linkedGeo);
+	}
+
+	private static void createEmptyText(Construction cons) {
+		if (emptyText == null) {
+			emptyText = new GeoText(cons, "");
+		}
 	}
 
 	/**
@@ -539,18 +547,38 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 
 	@Override
 	public void setDynamicCaption(GeoText caption) {
-		if (dynamicCaption != null) {
-			dynamicCaption.unregisterUpdateListener(this);
-		}
+		unregisterDynamicCaption();
 		dynamicCaption = caption;
+		registerDynamicCaption();
+	}
+
+	protected void unregisterDynamicCaption() {
+		if (dynamicCaption == null) {
+			return;
+		}
+
+		dynamicCaption.unregisterUpdateListener(this);
+	}
+
+	private void registerDynamicCaption() {
+		if (dynamicCaption == null) {
+			return;
+		}
+
 		dynamicCaption.registerUpdateListener(this);
 	}
 
 	@Override
+	public void clearDynamicCaption() {
+		unregisterDynamicCaption();
+		dynamicCaption = emptyText;
+	}
+
+	@Override
 	public void update(boolean dragging) {
-		super.update(dragging);
 		if (isDynamicCaptionEnabled()) {
 			dynamicCaption.update(dragging);
 		}
+		super.update(dragging);
 	}
 }
