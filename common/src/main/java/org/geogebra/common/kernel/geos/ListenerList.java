@@ -10,12 +10,16 @@ public class ListenerList implements Iterable<GeoElement> {
 	private final Kernel kernel;
 
 	/**
-	 *
 	 * @param kernel {@link Kernel}
 	 */
 	public ListenerList(Kernel kernel) {
 		this.kernel = kernel;
 		this.geos = new ArrayList<>();
+	}
+
+	public ListenerList(ListenerList list) {
+		kernel = list.kernel;
+		geos = new ArrayList<>(list.geos);
 	}
 
 	/**
@@ -59,7 +63,7 @@ public class ListenerList implements Iterable<GeoElement> {
 		return geos.iterator();
 	}
 
-	public GeoElement[] toArray() {
-		return (GeoElement[]) geos.toArray();
+	public Object[] toArray() {
+		return  geos.toArray();
 	}
 }
