@@ -149,7 +149,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 	 */
 	@Override
 	public void doRemove() {
-		GeoElement[] conditionalsCopy = conditionals.toArray();
+		ListenerList conditionalsCopy = new ListenerList(conditionals);
 		conditionals.clear();
 
 		for (GeoElement geo : conditionalsCopy) {

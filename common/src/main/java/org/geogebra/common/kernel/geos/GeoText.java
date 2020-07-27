@@ -344,6 +344,16 @@ public class GeoText extends GeoElement
 
 	@Override
 	public void doRemove() {
+		ListenerList listenersCopy = new ListenerList(updateListeners);
+		updateListeners.clear();
+
+		for (GeoElement geo : listenersCopy) {
+			HasDynamicCaption hasDynamicCaption = ((HasDynamicCaption) geo);
+			hasDynamicCaption.setDynamicCaptionEnabled(false);
+			hasDynamicCaption.clearDynamicCaption();
+			kernel.notifyUpdate(geo);
+		}
+
 		super.doRemove();
 		// tell startPoint
 		if (startPoint != null) {
