@@ -6,8 +6,8 @@ import java.util.Iterator;
 import org.geogebra.common.kernel.Kernel;
 
 public class ListenerList implements Iterable<GeoElement> {
-	private ArrayList<GeoElement> geos;
-	private Kernel kernel;
+	private final ArrayList<GeoElement> geos;
+	private final Kernel kernel;
 
 	/**
 	 *
@@ -57,5 +57,9 @@ public class ListenerList implements Iterable<GeoElement> {
 	@Override
 	public Iterator<GeoElement> iterator() {
 		return geos.iterator();
+	}
+
+	public GeoElement[] toArray() {
+		return (GeoElement[]) geos.toArray();
 	}
 }

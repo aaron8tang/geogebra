@@ -12,7 +12,6 @@
 
 package org.geogebra.common.kernel.geos;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -44,7 +43,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 	private boolean checkboxFixed;
 	private boolean showExtendedAV = true;
 
-	private ArrayList<GeoElement> condListenersShowObject;
+	private final ListenerList conditionals;
 
 	/**
 	 * Creates new boolean
@@ -56,6 +55,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 		super(c);
 		checkboxFixed = true;
 		setEuclidianVisible(false);
+		conditionals = new ListenerList(kernel);
 	}
 
 	/**
@@ -117,10 +117,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 	 *            geo which should use this boolean as condition to show
 	 */
 	public void registerConditionListener(GeoElement geo) {
-		if (condListenersShowObject == null) {
-			condListenersShowObject = new ArrayList<>();
-		}
-		condListenersShowObject.add(geo);
+		conditionals.register(geo);
 	}
 
 	/**
@@ -130,9 +127,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 	 *            geo which uses this boolean as condition to show
 	 */
 	public void unregisterConditionListener(GeoElement geo) {
-		if (condListenersShowObject != null) {
-			condListenersShowObject.remove(geo);
-		}
+		conditionals.unregister(geo);
 	}
 
 	/**
@@ -145,12 +140,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 
 		// update all registered locatables (they have this point as start
 		// point)
-		if (condListenersShowObject != null) {
-			for (int i = 0; i < condListenersShowObject.size(); i++) {
-				GeoElement geo = condListenersShowObject.get(i);
-				kernel.notifyUpdate(geo);
-			}
-		}
+		conditionals.notifyUpdate();
 	}
 
 	/**
@@ -159,18 +149,14 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 	 */
 	@Override
 	public void doRemove() {
-		if (condListenersShowObject != null) {
-			// copy conditionListeners into array
-			Object[] geos = condListenersShowObject.toArray();
-			condListenersShowObject.clear();
+		GeoElement[] conditionalsCopy = conditionals.toArray();
+		conditionals.clear();
 
-			// tell all condition listeners
-			for (int i = 0; i < geos.length; i++) {
-				GeoElement geo = (GeoElement) geos[i];
-				geo.removeCondition(this);
-				kernel.notifyUpdate(geo);
-			}
+		for (GeoElement geo : conditionalsCopy) {
+			geo.removeCondition(this);
+			kernel.notifyUpdate(geo);
 		}
+
 		super.doRemove();
 	}
 
@@ -404,17 +390,15 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 
 	@Override
 	public void moveDependencies(GeoElement oldGeo) {
-		if (oldGeo.isGeoBoolean()
-				&& ((GeoBoolean) oldGeo).condListenersShowObject != null) {
-
-			condListenersShowObject = ((GeoBoolean) oldGeo).condListenersShowObject;
-			for (GeoElement geo : condListenersShowObject) {
-				geo.condShowObject = this;
-			}
-
-			((GeoBoolean) oldGeo).condListenersShowObject = null;
+		if (!oldGeo.isGeoBoolean()) {
+			return;
 		}
-	}
+
+		GeoBoolean geoBoolean = (GeoBoolean) oldGeo;
+		conditionals.clear();
+		for (GeoElement conditional : geoBoolean.conditionals) {
+			registerConditionListener(conditional);
+		}}
 
 	@Override
 	public void setEuclidianVisible(boolean visible) {
