@@ -14,6 +14,11 @@ public class DrawDynamicCaption {
 	private int captionWidth;
 	private int captionHeight;
 
+	/**
+	 *
+	 * @param view {@link EuclidianView}
+	 * @param drawInputBox {@link DrawInputBox}
+	 */
 	public DrawDynamicCaption(EuclidianView view,
 			DrawInputBox drawInputBox) {
 		this.drawInputBox = drawInputBox;
@@ -51,6 +56,9 @@ public class DrawDynamicCaption {
 		return getDynamicCaption() == null;
 	}
 
+	/**
+	 * Update dynamic caption
+	 */
 	public void update() {
 		if (noCaption() || !isEnabled()) {
 			return;
@@ -74,6 +82,11 @@ public class DrawDynamicCaption {
 		return inputBox.getDynamicCaption();
 	}
 
+	/**
+	 * Sets the dimension of the inputbox label.
+	 *
+	 * @return if label is latex or not.
+	 */
 	public boolean setLabelSize() {
 		if (drawCaption == null) {
 			return false;
@@ -93,6 +106,9 @@ public class DrawDynamicCaption {
 				: drawInputBox.yLabel + drawInputBox.getTextBottom();
 	}
 
+	/**
+	 * Highlight the caption.
+	 */
 	public void highlight() {
 		captionCopy.setBackgroundColor(
 				isHighlighted()
@@ -108,6 +124,15 @@ public class DrawDynamicCaption {
 		return captionHeight;
 	}
 
+	/**
+	 * @param x
+	 *            mouse x-coord
+	 * @param y
+	 *            mouse y-coord
+	 * @param hitThreshold
+	 *            pixel threshold
+	 * @return true if dynamic caption is hit
+	 */
 	public boolean hit(int x, int y, int hitThreshold) {
 		if (!isEnabled()) {
 			return false;

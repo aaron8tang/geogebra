@@ -453,7 +453,6 @@ public class DrawInputBox extends CanvasDrawable {
 		}
 	}
 
-
 	private boolean recomputeSize() {
 		return measureLabel(view.getGraphicsForPen(), getGeoInputBox(), labelDesc);
 	}

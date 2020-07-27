@@ -2331,12 +2331,9 @@ public class ConsElementXMLHandler {
 		linkedGeoList.clear();
 	}
 
-
 	private void processDynamicCaptionList() {
 		try {
-			Iterator<GeoExpPair> it = dynamicCaptionList.iterator();
-			while (it.hasNext()) {
-				GeoExpPair pair = it.next();
+			for (GeoExpPair pair : dynamicCaptionList) {
 				GeoElement caption = xmlHandler.kernel.lookupLabel(pair.exp);
 				if (caption.isGeoText()) {
 					HasDynamicCaption text = (HasDynamicCaption) pair.geoElement;
