@@ -39,7 +39,9 @@ public class DrawDynamicCaption {
 	}
 
 	private void measure(GGraphics2D g2) {
-		drawCaption.xLabel = - 100;
+		drawCaption.xLabel = Integer.MIN_VALUE;
+		drawCaption.yLabel = Integer.MIN_VALUE;
+
 		drawCaption.draw(g2);
 		captionWidth = (int) drawCaption.getBounds().getWidth();
 		captionHeight = (int) drawCaption.getBounds().getHeight();
