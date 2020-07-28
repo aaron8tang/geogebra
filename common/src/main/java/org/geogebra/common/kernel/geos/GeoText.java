@@ -14,6 +14,7 @@ package org.geogebra.common.kernel.geos;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 
@@ -122,7 +123,7 @@ public class GeoText extends GeoElement
 	private boolean symbolicMode;
 	private int totalHeight;
 	private int totalWidth;
-	private ListenerList updateListeners;
+	private List<GeoElement> updateListeners;
 
 	/**
 	 * Creates new text
@@ -138,7 +139,7 @@ public class GeoText extends GeoElement
 		// http://benpryor.com/blog/2008/01/02/dont-call-subclass-methods-from-a-superclass-constructor/
 		setConstructionDefaults(); // init visual settings
 
-		updateListeners = new ListenerList(kernel);
+		updateListeners = new ArrayList<>();
 	}
 
 	/**
@@ -344,11 +345,11 @@ public class GeoText extends GeoElement
 
 	@Override
 	public void doRemove() {
-		ListenerList listenersCopy = new ListenerList(updateListeners);
+		List<GeoElement> listenersCopy = new ArrayList<>(updateListeners);
 		updateListeners.clear();
 
 		for (GeoElement geo : listenersCopy) {
-			HasDynamicCaption hasDynamicCaption = ((HasDynamicCaption) geo);
+			HasDynamicCaption hasDynamicCaption = (HasDynamicCaption) geo;
 			hasDynamicCaption.setDynamicCaptionEnabled(false);
 			hasDynamicCaption.clearDynamicCaption();
 			kernel.notifyUpdate(geo);
@@ -398,7 +399,10 @@ public class GeoText extends GeoElement
 			kernel.getApplication().setAltText();
 		}
 
-		updateListeners.notifyUpdate();
+
+		for (GeoElement geo : updateListeners) {
+			geo.notifyUpdate();
+		}
 	}
 
 	/**
@@ -1519,11 +1523,11 @@ public class GeoText extends GeoElement
 	}
 
 	public void registerUpdateListener(GeoElement geo) {
-		updateListeners.register(geo);
+		updateListeners.add(geo);
 	}
 
 	public void unregisterUpdateListener(GeoElement geo) {
-		updateListeners.unregister(geo);
+		updateListeners.remove(geo);
 	}
 
 	@Override

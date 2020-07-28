@@ -12,7 +12,9 @@
 
 package org.geogebra.common.kernel.geos;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
@@ -43,7 +45,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 	private boolean checkboxFixed;
 	private boolean showExtendedAV = true;
 
-	private final ListenerList conditionals;
+	private final List<GeoElement> conditionals;
 
 	/**
 	 * Creates new boolean
@@ -55,7 +57,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 		super(c);
 		checkboxFixed = true;
 		setEuclidianVisible(false);
-		conditionals = new ListenerList(kernel);
+		conditionals = new ArrayList<>();
 	}
 
 	/**
@@ -117,7 +119,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 	 *            geo which should use this boolean as condition to show
 	 */
 	public void registerConditionListener(GeoElement geo) {
-		conditionals.register(geo);
+		conditionals.add(geo);
 	}
 
 	/**
@@ -127,7 +129,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 	 *            geo which uses this boolean as condition to show
 	 */
 	public void unregisterConditionListener(GeoElement geo) {
-		conditionals.unregister(geo);
+		conditionals.remove(geo);
 	}
 
 	/**
@@ -140,7 +142,9 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 
 		// update all registered locatables (they have this point as start
 		// point)
-		conditionals.notifyUpdate();
+		for (GeoElement geo: conditionals) {
+			geo.notifyUpdate();
+		}
 	}
 
 	/**
@@ -149,7 +153,7 @@ public class GeoBoolean extends GeoElement implements BooleanValue,
 	 */
 	@Override
 	public void doRemove() {
-		ListenerList conditionalsCopy = new ListenerList(conditionals);
+		List<GeoElement> conditionalsCopy = new ArrayList<>(conditionals);
 		conditionals.clear();
 
 		for (GeoElement geo : conditionalsCopy) {
