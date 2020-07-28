@@ -11,16 +11,10 @@ import org.geogebra.common.kernel.kernelND.GeoElementND;
 public interface HasDynamicCaption extends GeoElementND {
 
 	/**
-	 * Enable/disable dynamic caption.
-	 * @param enabled to set.
-	 */
-	void setDynamicCaptionEnabled(boolean enabled);
-
-	/**
 	 *
-	 * @return if caption can be dynamic (GeoText).
+	 * @return if dynamic caption is set (as GeoText).
 	 */
-	boolean isDynamicCaptionEnabled();
+	boolean hasDynamicCaption();
 
 	/**
 	 *
@@ -38,4 +32,9 @@ public interface HasDynamicCaption extends GeoElementND {
 	 * Clears dynamic caption but does not disable it.
 	 */
 	void clearDynamicCaption();
+
+	/**
+	 * Removes dynamic capiton completely.
+	 */
+	void removeDynamicCaption();
 }

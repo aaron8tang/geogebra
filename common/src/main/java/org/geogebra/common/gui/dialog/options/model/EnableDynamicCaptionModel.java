@@ -15,7 +15,7 @@ public class EnableDynamicCaptionModel extends BooleanOptionModel {
 
 	@Override
 	public boolean getValueAt(int index) {
-		return at(index).isDynamicCaptionEnabled();
+		return at(index).hasDynamicCaption();
 	}
 
 	@Override
@@ -26,8 +26,12 @@ public class EnableDynamicCaptionModel extends BooleanOptionModel {
 	@Override
 	public void apply(int index, boolean value) {
 		HasDynamicCaption asGeoText = at(index);
-		asGeoText.setDynamicCaptionEnabled(value);
-		asGeoText.clearDynamicCaption();
+		if (value) {
+			asGeoText.clearDynamicCaption();
+		} else {
+			asGeoText.removeDynamicCaption();
+		}
+
 		asGeoText.updateRepaint();
 	}
 }

@@ -46,7 +46,6 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	private @Nonnull InputBoxProcessor inputBoxProcessor;
 	private @Nonnull InputBoxRenderer inputBoxRenderer;
 	private String tempUserDisplayInput;
-	private boolean dynamicCaptionEnabled = false;
 	private GeoText dynamicCaption;
 	private static GeoText emptyText;
 
@@ -531,13 +530,8 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	}
 
 	@Override
-	public void setDynamicCaptionEnabled(boolean enabled) {
-		dynamicCaptionEnabled = enabled;
-	}
-
-	@Override
-	public boolean isDynamicCaptionEnabled() {
-		return dynamicCaptionEnabled;
+	public boolean hasDynamicCaption() {
+		return dynamicCaption != null;
 	}
 
 	@Override
@@ -575,8 +569,14 @@ public class GeoInputBox extends GeoButton implements HasSymbolicMode, HasAlignm
 	}
 
 	@Override
+	public void removeDynamicCaption() {
+		unregisterDynamicCaption();
+		dynamicCaption = null;
+	}
+
+	@Override
 	public void update(boolean dragging) {
-		if (isDynamicCaptionEnabled()) {
+		if (hasDynamicCaption()) {
 			dynamicCaption.update(dragging);
 		}
 		super.update(dragging);

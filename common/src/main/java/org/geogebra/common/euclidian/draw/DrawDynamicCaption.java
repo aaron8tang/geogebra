@@ -28,7 +28,7 @@ public class DrawDynamicCaption {
 	}
 
 	public boolean isEnabled() {
-		return inputBox.isDynamicCaptionEnabled();
+		return inputBox.hasDynamicCaption();
 	}
 
 	void draw(GGraphics2D g2) {

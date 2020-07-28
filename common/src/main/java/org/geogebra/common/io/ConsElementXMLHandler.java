@@ -2337,7 +2337,6 @@ public class ConsElementXMLHandler {
 				GeoElement caption = xmlHandler.kernel.lookupLabel(pair.exp);
 				if (caption.isGeoText()) {
 					HasDynamicCaption text = (HasDynamicCaption) pair.geoElement;
-					text.setDynamicCaptionEnabled(true);
 					text.setDynamicCaption((GeoText) caption);
 				} else {
 					Log.error("dynamicCaption is not a GeoText");

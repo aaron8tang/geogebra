@@ -350,8 +350,7 @@ public class GeoText extends GeoElement
 
 		for (GeoElement geo : listenersCopy) {
 			HasDynamicCaption hasDynamicCaption = (HasDynamicCaption) geo;
-			hasDynamicCaption.setDynamicCaptionEnabled(false);
-			hasDynamicCaption.clearDynamicCaption();
+			hasDynamicCaption.removeDynamicCaption();
 			kernel.notifyUpdate(geo);
 		}
 
@@ -398,7 +397,6 @@ public class GeoText extends GeoElement
 				&& getLabelSimple().startsWith("altText")) {
 			kernel.getApplication().setAltText();
 		}
-
 
 		for (GeoElement geo : updateListeners) {
 			geo.notifyUpdate();
