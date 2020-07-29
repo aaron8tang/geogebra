@@ -1521,6 +1521,10 @@ public class GeoText extends GeoElement
 	}
 
 	public void registerUpdateListener(GeoElement geo) {
+		if (updateListeners.contains(geo)) {
+			return;
+		}
+
 		updateListeners.add(geo);
 	}
 
@@ -1535,8 +1539,10 @@ public class GeoText extends GeoElement
 		}
 
 		GeoText text = (GeoText) oldGeo;
+		List<GeoElement> listenersCopy = new ArrayList<>(text.updateListeners);
 		updateListeners.clear();
-		for (GeoElement geo: text.updateListeners) {
+		text.updateListeners.clear();
+		for (GeoElement geo: listenersCopy) {
 			((HasDynamicCaption) geo).setDynamicCaption(this);
 			registerUpdateListener(geo);
 		}
