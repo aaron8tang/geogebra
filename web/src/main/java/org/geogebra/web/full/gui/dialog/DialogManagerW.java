@@ -456,7 +456,7 @@ public class DialogManagerW extends DialogManager
 
 			saveDialog = doYouWantSaveChanges
 					? new DoYouWantToSaveChangesDialog((AppW) app,
-						data, false ,true)
+						data, false, true)
 					: new SaveDialogMow2((AppW) app, data, false, true);
 		} else if (saveDialog == null) {
 			saveDialog = new SaveDialogW((AppW) app, widgetFactory);
