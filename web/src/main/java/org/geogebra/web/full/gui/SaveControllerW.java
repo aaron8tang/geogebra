@@ -103,9 +103,9 @@ public class SaveControllerW implements SaveController {
 
 	@Override
 	public void showDialogIfNeeded(AsyncOperation<Boolean> examCallback) {
-		SaveDialogI saveDialog = ((DialogManagerW) app.getDialogManager()).getSaveDialog();
-		showDialogIfNeeded(examCallback, !app.isSaved(), null);
-		saveDialog.setDiscardMode();
+		//SaveDialogI saveDialog = ((DialogManagerW) app.getDialogManager()).getSaveDialog(true);
+		showDialogIfNeeded(examCallback, !app.isSaved(), null, true);
+//		saveDialog.setDiscardMode();
 	}
 
 	/**
@@ -115,24 +115,24 @@ public class SaveControllerW implements SaveController {
 	 *         whether to show the dialog
 	 * @param anchor
 	 *         UI element to be used for positioning the save dialog
+	 * @param doYouWantSaveChanges
+	 * 		  true if doYouWantToSaveYourChanges should be shown
 	 */
 	public void showDialogIfNeeded(final AsyncOperation<Boolean> runnable, boolean needed,
-								   Widget anchor) {
+								   Widget anchor, boolean doYouWantSaveChanges) {
 		if (needed && !app.getLAF().isEmbedded()) {
 			final Material oldActiveMaterial = app.getActiveMaterial();
 			final String oldTitle = app.getKernel().getConstruction().getTitle();
 			ensureTypeOtherThan(Material.MaterialType.ggsTemplate);
-			setRunAfterSave(new AsyncOperation<Boolean>() {
-				@Override
-				public void callback(Boolean saved) {
-					if (!saved) {
-						app.setActiveMaterial(oldActiveMaterial);
-						app.getKernel().getConstruction().setTitle(oldTitle);
-					}
-					runnable.callback(saved);
+			setRunAfterSave(saved -> {
+				if (!saved) {
+					app.setActiveMaterial(oldActiveMaterial);
+					app.getKernel().getConstruction().setTitle(oldTitle);
 				}
+				runnable.callback(saved);
 			});
-			((DialogManagerW) app.getDialogManager()).getSaveDialog().showAndPosition(anchor);
+			((DialogManagerW) app.getDialogManager())
+					.getSaveDialog(doYouWantSaveChanges).showAndPosition(anchor);
 		} else {
 			setRunAfterSave(null);
 			runnable.callback(true);

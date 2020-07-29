@@ -294,7 +294,7 @@ public class WinFileManager extends FileManager {
 			@Override
 			public void callback(final String path) {
 				app1.getGgbApi().showTooltip("");
-				((DialogManagerW) app1.getDialogManager()).getSaveDialog()
+				((DialogManagerW) app1.getDialogManager()).getSaveDialog(false)
 						.hide();
 				getApp().dispatchEvent(
 						new Event(EventType.EXPORT, null, "[\"ggb\"]"));

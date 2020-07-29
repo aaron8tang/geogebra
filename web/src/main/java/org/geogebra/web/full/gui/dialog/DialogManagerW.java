@@ -43,8 +43,10 @@ import org.geogebra.web.full.gui.dialog.image.UploadImageDialog;
 import org.geogebra.web.full.gui.dialog.image.WebcamInputDialog;
 import org.geogebra.web.full.gui.dialog.template.TemplateChooser;
 import org.geogebra.web.full.gui.properties.PropertiesViewW;
+import org.geogebra.web.full.gui.util.DoYouWantToSaveChangesDialog;
 import org.geogebra.web.full.gui.util.SaveDialogI;
 import org.geogebra.web.full.gui.util.SaveDialogMow;
+import org.geogebra.web.full.gui.util.SaveDialogMow2;
 import org.geogebra.web.full.gui.util.SaveDialogW;
 import org.geogebra.web.full.gui.view.data.DataAnalysisViewW;
 import org.geogebra.web.full.gui.view.functioninspector.FunctionInspectorW;
@@ -59,6 +61,7 @@ import org.geogebra.web.html5.gui.tooltip.ToolTipManagerW;
 import org.geogebra.web.html5.gui.tooltip.ToolTipManagerW.ToolTipLinkType;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.debug.LoggerW;
+import org.geogebra.web.shared.components.DialogData;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -440,14 +443,24 @@ public class DialogManagerW extends DialogManager
 	}
 
 	/**
-	 *
+	 * @param doYouWantSaveChanges true if doYooWantToSaveYourChangesDialog
+	 * 		should be shown
 	 * @return {@link SaveDialogI}
 	 */
-	public SaveDialogI getSaveDialog() {
-		if (saveDialog == null) {
-			saveDialog = app.isMebis()
-					? new SaveDialogMow((AppW) app)
-					: new SaveDialogW((AppW) app, widgetFactory);
+	public SaveDialogI getSaveDialog(boolean doYouWantSaveChanges) {
+		if (app.isMebis()) {
+			DialogData data = doYouWantSaveChanges
+					? new DialogData("DoYouWantToSaveYourChanges",
+					"Discard", "Save")
+					:  new DialogData("Save",
+					"Cancel", "Save");
+
+			saveDialog = doYouWantSaveChanges
+					? new DoYouWantToSaveChangesDialog((AppW) app,
+						data, false ,true)
+					: new SaveDialogMow2((AppW) app, data, false ,true);
+		} else if (saveDialog == null) {
+			saveDialog = new SaveDialogW((AppW) app, widgetFactory);
 		}
 		// set default saveType
 		saveDialog.setSaveType(
@@ -459,7 +472,7 @@ public class DialogManagerW extends DialogManager
 	 * shows the {@link SaveDialogW} centered on the screen
 	 */
 	public void showSaveDialog() {
-		getSaveDialog().show();
+		getSaveDialog(false).show();
 	}
 
 	@Override

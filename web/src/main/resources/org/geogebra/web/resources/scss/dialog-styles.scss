@@ -457,7 +457,8 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
    		}
 	}
 
-	.MaterialDialogBox.mediaDialog {
+	.MaterialDialogBox.mediaDialog,
+	  .dialogComponent.mediaDialog {
    		.mowInputPanelContent {
    			.AutoCompleteTextFieldW {
    				margin: 8px 16px 8px 0px;
@@ -1213,8 +1214,15 @@ $shadow-card-hover: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,
   		}
 	}
 
- 	.MaterialDialogBox.saveDialogMow {
+ 	.dialogComponent.saveDialogMow {
 		@extend .mediaDialog;
+
+		max-height: 188px;
+		max-width: 448px;
+
+		&.templateSave {
+			max-height: 236px;
+		}
 
 		.mowInputPanelContent {
 				.AutoCompleteTextFieldW {

@@ -85,7 +85,7 @@ public class ShareControllerW implements ShareController {
 	 */
 	private void saveUntitledMaterial(AsyncOperation<Boolean> shareCallback) {
 		((SaveControllerW) app.getSaveController())
-				.showDialogIfNeeded(shareCallback, true, anchor);
+				.showDialogIfNeeded(shareCallback, true, anchor, false);
 	}
 
 	private void autoSaveMaterial(AsyncOperation<Boolean> shareCallback) {
@@ -93,12 +93,9 @@ public class ShareControllerW implements ShareController {
 	}
 
 	private void loginForShare() {
-		app.getLoginOperation().getView().add(new EventRenderable() {
-			@Override
-			public void renderEvent(BaseEvent event) {
-				if (event instanceof LoginEvent && ((LoginEvent) event).isSuccessful()) {
-					share();
-				}
+		app.getLoginOperation().getView().add(event -> {
+			if (event instanceof LoginEvent && ((LoginEvent) event).isSuccessful()) {
+				share();
 			}
 		});
 		app.getLoginOperation().showLoginDialog();
