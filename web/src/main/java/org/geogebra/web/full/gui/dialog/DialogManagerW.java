@@ -45,7 +45,6 @@ import org.geogebra.web.full.gui.dialog.template.TemplateChooser;
 import org.geogebra.web.full.gui.properties.PropertiesViewW;
 import org.geogebra.web.full.gui.util.DoYouWantToSaveChangesDialog;
 import org.geogebra.web.full.gui.util.SaveDialogI;
-import org.geogebra.web.full.gui.util.SaveDialogMow;
 import org.geogebra.web.full.gui.util.SaveDialogMow2;
 import org.geogebra.web.full.gui.util.SaveDialogW;
 import org.geogebra.web.full.gui.view.data.DataAnalysisViewW;
@@ -458,7 +457,7 @@ public class DialogManagerW extends DialogManager
 			saveDialog = doYouWantSaveChanges
 					? new DoYouWantToSaveChangesDialog((AppW) app,
 						data, false ,true)
-					: new SaveDialogMow2((AppW) app, data, false ,true);
+					: new SaveDialogMow2((AppW) app, data, false, true);
 		} else if (saveDialog == null) {
 			saveDialog = new SaveDialogW((AppW) app, widgetFactory);
 		}

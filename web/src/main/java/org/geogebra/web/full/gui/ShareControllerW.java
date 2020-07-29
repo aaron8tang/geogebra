@@ -2,10 +2,8 @@ package org.geogebra.web.full.gui;
 
 import org.geogebra.common.main.MaterialsManagerI;
 import org.geogebra.common.main.ShareController;
-import org.geogebra.common.move.events.BaseEvent;
 import org.geogebra.common.move.ggtapi.events.LoginEvent;
 import org.geogebra.common.move.ggtapi.models.Material;
-import org.geogebra.common.move.views.EventRenderable;
 import org.geogebra.common.util.AsyncOperation;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.shared.ShareDialogMow;

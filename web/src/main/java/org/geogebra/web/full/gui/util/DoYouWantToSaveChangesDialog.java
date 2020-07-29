@@ -19,6 +19,7 @@ public class DoYouWantToSaveChangesDialog extends ComponentDialog implements
 	private FlowPanel contentPanel;
 	private FlowPanel inputPanel;
 	private InputPanelW titleField;
+
 	/**
 	 * base dialog constructor
 	 * @param app - see {@link AppW}
@@ -36,6 +37,9 @@ public class DoYouWantToSaveChangesDialog extends ComponentDialog implements
 		DialogUtil.hideOnLogout(app, this);
 	}
 
+	/**
+	 * build dialog content
+	 */
 	public void buildContent() {
 		contentPanel = new FlowPanel();
 		inputPanel = new FlowPanel();
@@ -93,6 +97,7 @@ public class DoYouWantToSaveChangesDialog extends ComponentDialog implements
 	 * @param saveType
 	 *			for the dialog.
 	 */
+	@Override
 	public void setSaveType(Material.MaterialType saveType) {
 		app.getSaveController().setSaveType(saveType);
 	}
@@ -186,6 +191,7 @@ public class DoYouWantToSaveChangesDialog extends ComponentDialog implements
 	/**
 	 * Sets initial title for the material to save.
 	 */
+	@Override
 	public void setTitle() {
 		app.getSaveController()
 				.updateSaveTitle(getInputField().getTextComponent(), "");

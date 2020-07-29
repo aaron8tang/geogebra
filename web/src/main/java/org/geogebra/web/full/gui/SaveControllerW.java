@@ -20,7 +20,6 @@ import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.TextObject;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.full.gui.dialog.DialogManagerW;
-import org.geogebra.web.full.gui.util.SaveDialogI;
 import org.geogebra.web.full.main.FileManager;
 import org.geogebra.web.full.move.googledrive.operations.GoogleDriveOperationW;
 import org.geogebra.web.full.util.SaveCallback;
@@ -103,9 +102,7 @@ public class SaveControllerW implements SaveController {
 
 	@Override
 	public void showDialogIfNeeded(AsyncOperation<Boolean> examCallback) {
-		//SaveDialogI saveDialog = ((DialogManagerW) app.getDialogManager()).getSaveDialog(true);
 		showDialogIfNeeded(examCallback, !app.isSaved(), null, true);
-//		saveDialog.setDiscardMode();
 	}
 
 	/**
