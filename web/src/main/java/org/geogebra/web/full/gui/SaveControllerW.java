@@ -125,7 +125,8 @@ public class SaveControllerW implements SaveController {
 	 * 		  true if checkbox should be visible
 	 */
 	public void showDialogIfNeeded(final AsyncOperation<Boolean> runnable, boolean needed,
-								   Widget anchor, boolean doYouWantSaveChanges, boolean addTempCheckBox) {
+								   Widget anchor, boolean doYouWantSaveChanges,
+									boolean addTempCheckBox) {
 		if (needed && !app.getLAF().isEmbedded()) {
 			final Material oldActiveMaterial = app.getActiveMaterial();
 			final String oldTitle = app.getKernel().getConstruction().getTitle();
