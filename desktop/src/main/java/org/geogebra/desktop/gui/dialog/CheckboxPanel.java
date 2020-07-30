@@ -106,8 +106,4 @@ class CheckboxPanel extends OptionPanel
 	public JCheckBox getCheckbox() {
 		return checkbox;
 	}
-
-	public boolean noModel() {
-		return model == null;
-	}
 }

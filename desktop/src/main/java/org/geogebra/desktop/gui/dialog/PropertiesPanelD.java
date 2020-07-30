@@ -72,7 +72,6 @@ import org.geogebra.common.gui.dialog.options.model.DecoAngleModel.IDecoAngleLis
 import org.geogebra.common.gui.dialog.options.model.DecoSegmentModel;
 import org.geogebra.common.gui.dialog.options.model.FixCheckboxModel;
 import org.geogebra.common.gui.dialog.options.model.FixObjectModel;
-import org.geogebra.common.gui.dialog.options.model.GeoComboListener;
 import org.geogebra.common.gui.dialog.options.model.IComboListener;
 import org.geogebra.common.gui.dialog.options.model.ISliderListener;
 import org.geogebra.common.gui.dialog.options.model.ITextFieldListener;
@@ -87,7 +86,6 @@ import org.geogebra.common.gui.dialog.options.model.LineStyleModel.ILineStyleLis
 import org.geogebra.common.gui.dialog.options.model.ListAsComboModel;
 import org.geogebra.common.gui.dialog.options.model.ListAsComboModel.IListAsComboListener;
 import org.geogebra.common.gui.dialog.options.model.LodModel;
-import org.geogebra.common.gui.dialog.options.model.MultipleOptionsModel;
 import org.geogebra.common.gui.dialog.options.model.OutlyingIntersectionsModel;
 import org.geogebra.common.gui.dialog.options.model.PlaneEqnModel;
 import org.geogebra.common.gui.dialog.options.model.PointSizeModel;
@@ -811,133 +809,6 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		namePanel.updateName(geo);
 	}
 
-	private class ComboPanel extends JPanel implements ActionListener,
-			SetLabels, UpdateFonts, UpdateablePropertiesPanel,
-			GeoComboListener {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		private JLabel label;
-		protected JComboBox comboBox;
-		private MultipleOptionsModel model;
-		private String title;
-
-		public ComboPanel(final String title) {
-			this.setTitle(title);
-			label = new JLabel();
-			comboBox = new JComboBox();
-
-			setLayout(new FlowLayout(FlowLayout.LEFT));
-			add(label);
-			add(comboBox);
-		}
-
-		@Override
-		public void setLabels() {
-			label.setText(loc.getMenu(getTitle()) + ":");
-
-			int selectedIndex = comboBox.getSelectedIndex();
-			comboBox.removeActionListener(this);
-
-			comboBox.removeAllItems();
-			getModel().fillModes(loc);
-			if (selectedIndex < comboBox.getItemCount()) {
-				comboBox.setSelectedIndex(selectedIndex);
-			}
-			comboBox.addActionListener(this);
-		}
-
-		@Override
-		public JPanel updatePanel(Object[] geos) {
-			model.setGeos(geos);
-			if (!model.checkGeos()) {
-				return null;
-			}
-
-			comboBox.removeActionListener(this);
-
-			getModel().updateProperties();
-
-			comboBox.addActionListener(this);
-			return this;
-		}
-
-		@Override
-		public void updateFonts() {
-			Font font = app.getPlainFont();
-
-			label.setFont(font);
-			comboBox.setFont(font);
-		}
-
-		@Override
-		public void updateVisualStyle(GeoElement geo) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void setSelectedIndex(int index) {
-			comboBox.setSelectedIndex(index);
-		}
-
-		@Override
-		public void addItem(String item) {
-			comboBox.addItem(item);
-		}
-
-		/**
-		 * action listener implementation for label mode combobox
-		 */
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			Object source = e.getSource();
-			if (source == comboBox) {
-				model.applyChanges(comboBox.getSelectedIndex());
-			}
-		}
-
-		public JLabel getLabel() {
-			return label;
-		}
-
-		public MultipleOptionsModel getModel() {
-			return model;
-		}
-
-		public void setModel(MultipleOptionsModel model) {
-			this.model = model;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		@Override
-		public void setSelectedItem(String item) {
-			comboBox.setSelectedItem(item);
-		}
-
-		@Override
-		public void clearItems() {
-			comboBox.removeAllItems();
-		}
-
-		@Override
-		public void addItem(GeoElement geo) {
-			if (geo != null) {
-				addItem(geo.getLabel(StringTemplate.editTemplate));
-			} else {
-				addItem("");
-			}
-		}
-
-	}
-
 	private static class TabPanel extends JPanel {
 
 		private static final long serialVersionUID = 1L;
@@ -1292,7 +1163,7 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		private static final long serialVersionUID = 1L;
 
 		public TooltipPanel() {
-			super("Tooltip");
+			super(app, "Tooltip");
 			TooltipModel model = new TooltipModel(app);
 			model.setListener(this);
 			setModel(model);
@@ -1303,7 +1174,7 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		private static final long serialVersionUID = 1L;
 
 		public LayerPanel() {
-			super("Layer");
+			super(app, "Layer");
 			LayerModel model = new LayerModel(app);
 			model.setListener(this);
 			setModel(model);
@@ -1772,7 +1643,7 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		private ImageCornerModel model;
 
 		public ImageCornerPanel(int cornerIdx) {
-			super("CornerModel");
+			super(app, "CornerModel");
 			model = new ImageCornerModel(app);
 			model.setListener(this);
 			model.setCornerIdx(cornerIdx);
@@ -2058,7 +1929,7 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		private static final long serialVersionUID = 1L;
 
 		public CoordsPanel() {
-			super("Coordinates");
+			super(app, "Coordinates");
 			CoordsModel model = new CoordsModel(app);
 			model.setListener(this);
 			setModel(model);
@@ -2069,7 +1940,7 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		private static final long serialVersionUID = 1L;
 
 		public LineEqnPanel() {
-			super("Equation");
+			super(app, "Equation");
 			LineEqnModel model = new LineEqnModel(app);
 			model.setListener(this);
 			setModel(model);
@@ -2080,7 +1951,7 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		private static final long serialVersionUID = 1L;
 
 		public PlaneEqnPanel() {
-			super("Equation");
+			super(app, "Equation");
 			PlaneEqnModel model = new PlaneEqnModel(app);
 			model.setListener(this);
 			setModel(model);
@@ -2091,7 +1962,7 @@ public class PropertiesPanelD extends JPanel implements SetLabels, UpdateFonts,
 		private static final long serialVersionUID = 1L;
 
 		public ConicEqnPanel() {
-			super("Equation");
+			super(app, "Equation");
 			ConicEqnModel model = new ConicEqnModel(app);
 			model.setListener(this);
 			setModel(model);

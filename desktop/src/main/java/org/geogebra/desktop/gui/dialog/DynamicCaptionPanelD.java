@@ -1,5 +1,6 @@
 package org.geogebra.desktop.gui.dialog;
 
+import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 
 import javax.swing.JPanel;
@@ -15,6 +16,7 @@ public class DynamicCaptionPanelD extends OptionPanel implements SetLabels {
 	public DynamicCaptionPanelD(AppD app, AutoCompleteTextFieldD textField, UpdateTabs tabs) {
 		this.enableDynamicCaption = new EnableDynamicCaptionPanel(app, textField, tabs);
 		add(enableDynamicCaption);
+		setLayout(new FlowLayout(FlowLayout.LEFT));
 	}
 
 
