@@ -20,6 +20,7 @@ import org.geogebra.common.util.StringUtil;
 import org.geogebra.common.util.TextObject;
 import org.geogebra.common.util.debug.Log;
 import org.geogebra.web.full.gui.dialog.DialogManagerW;
+import org.geogebra.web.full.gui.util.SaveDialogI;
 import org.geogebra.web.full.main.FileManager;
 import org.geogebra.web.full.move.googledrive.operations.GoogleDriveOperationW;
 import org.geogebra.web.full.util.SaveCallback;
@@ -101,8 +102,14 @@ public class SaveControllerW implements SaveController {
 	}
 
 	@Override
-	public void showDialogIfNeeded(AsyncOperation<Boolean> examCallback) {
-		showDialogIfNeeded(examCallback, !app.isSaved(), null, true);
+	public void showDialogIfNeeded(AsyncOperation<Boolean> examCallback, boolean addTempCheckBox) {
+		SaveDialogI saveDialog = ((DialogManagerW) app.getDialogManager())
+				.getSaveDialog(true, addTempCheckBox);
+		showDialogIfNeeded(examCallback, !app.isSaved(), null,
+				true, addTempCheckBox);
+		if (!addTempCheckBox) {
+			saveDialog.setDiscardMode();
+		}
 	}
 
 	/**
@@ -114,9 +121,11 @@ public class SaveControllerW implements SaveController {
 	 *         UI element to be used for positioning the save dialog
 	 * @param doYouWantSaveChanges
 	 * 		  true if doYouWantToSaveYourChanges should be shown
+	 * @param addTempCheckBox
+	 * 		  true if checkbox should be visible
 	 */
 	public void showDialogIfNeeded(final AsyncOperation<Boolean> runnable, boolean needed,
-								   Widget anchor, boolean doYouWantSaveChanges) {
+								   Widget anchor, boolean doYouWantSaveChanges, boolean addTempCheckBox) {
 		if (needed && !app.getLAF().isEmbedded()) {
 			final Material oldActiveMaterial = app.getActiveMaterial();
 			final String oldTitle = app.getKernel().getConstruction().getTitle();
@@ -128,7 +137,8 @@ public class SaveControllerW implements SaveController {
 				}
 				runnable.callback(saved);
 			});
-			((DialogManagerW) app.getDialogManager()).getSaveDialog().show();
+			((DialogManagerW) app.getDialogManager())
+					.getSaveDialog(doYouWantSaveChanges, addTempCheckBox).show();
 		} else {
 			setRunAfterSave(null);
 			runnable.callback(true);

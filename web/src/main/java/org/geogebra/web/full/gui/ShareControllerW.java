@@ -5,6 +5,8 @@ import org.geogebra.common.main.ShareController;
 import org.geogebra.common.move.ggtapi.events.LoginEvent;
 import org.geogebra.common.move.ggtapi.models.Material;
 import org.geogebra.common.util.AsyncOperation;
+import org.geogebra.web.full.gui.dialog.DialogManagerW;
+import org.geogebra.web.full.gui.util.SaveDialogI;
 import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.shared.ShareDialogMow;
 import org.geogebra.web.shared.ShareLinkDialog;
@@ -83,8 +85,12 @@ public class ShareControllerW implements ShareController {
 	 * Create material and save online
 	 */
 	private void saveUntitledMaterial(AsyncOperation<Boolean> shareCallback) {
+		SaveDialogI saveDialog = ((DialogManagerW) app.getDialogManager())
+				.getSaveDialog(false, false);
 		((SaveControllerW) app.getSaveController())
-				.showDialogIfNeeded(shareCallback, true, anchor, false);
+				.showDialogIfNeeded(shareCallback, true, anchor,
+						false, false);
+		saveDialog.setDiscardMode();
 	}
 
 	private void autoSaveMaterial(AsyncOperation<Boolean> shareCallback) {

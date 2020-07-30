@@ -422,9 +422,11 @@ public class DialogManagerW extends DialogManager
 	/**
 	 * @param doYouWantSaveChanges true if doYooWantToSaveYourChangesDialog
 	 * 		should be shown
+	 * @param addTempCheckBox
+	 * 	    true if checkbox should be visible
 	 * @return {@link SaveDialogI}
 	 */
-	public SaveDialogI getSaveDialog(boolean doYouWantSaveChanges) {
+	public SaveDialogI getSaveDialog(boolean doYouWantSaveChanges, boolean addTempCheckBox) {
 		if (app.isMebis()) {
 			DialogData data = doYouWantSaveChanges
 					? new DialogData("DoYouWantToSaveYourChanges",
@@ -433,9 +435,8 @@ public class DialogManagerW extends DialogManager
 					"Cancel", "Save");
 
 			saveDialog = doYouWantSaveChanges
-					? new DoYouWantToSaveChangesDialog((AppW) app,
-						data, false, true)
-					: new SaveDialogMow2((AppW) app, data, false, true);
+					? new DoYouWantToSaveChangesDialog((AppW) app, data)
+					: new SaveDialogMow2((AppW) app, data, addTempCheckBox);
 		} else if (saveDialog == null) {
 			DialogData data = new DialogData("Save", "DontSave", "Save");
 			saveDialog = new SaveDialogW((AppW) app, data, widgetFactory);
@@ -451,7 +452,7 @@ public class DialogManagerW extends DialogManager
 	 * shows the {@link SaveDialogW} centered on the screen
 	 */
 	public void showSaveDialog() {
-		getSaveDialog(false).show();
+		getSaveDialog(false, true).show();
 	}
 
 	@Override

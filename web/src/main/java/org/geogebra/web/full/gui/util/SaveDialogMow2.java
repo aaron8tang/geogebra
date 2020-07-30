@@ -15,14 +15,15 @@ public class SaveDialogMow2 extends DoYouWantToSaveChangesDialog {
 	 * base dialog constructor
 	 * @param app - see {@link AppW}
 	 * @param dialogData - contains trans keys for title and buttons
-	 * @param autoHide - if the dialog should be closed on click outside
-	 * @param hasScrim - background should be greyed out
+	 *
 	 */
-	public SaveDialogMow2(AppW app,
-			DialogData dialogData, boolean autoHide,
-			boolean hasScrim) {
-		super(app, dialogData, autoHide, hasScrim);
-		addStyleName("templateSave");
+	public SaveDialogMow2(AppW app, DialogData dialogData, boolean addTempCheckBox) {
+		super(app, dialogData);
+		if (addTempCheckBox) {
+			addStyleName("templateSave");
+		} else {
+			templateCheckbox.setVisible(false);
+		}
 		setOnPositiveAction(() -> {
 			if (templateCheckbox.isSelected()) {
 				setSaveType(Material.MaterialType.ggsTemplate);
@@ -54,6 +55,6 @@ public class SaveDialogMow2 extends DoYouWantToSaveChangesDialog {
 
 	@Override
 	public void showAndPosition(Widget anchor) {
-		// only in super
+		// nothing to do here
 	}
 }

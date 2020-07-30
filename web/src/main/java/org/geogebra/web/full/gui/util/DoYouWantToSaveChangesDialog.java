@@ -24,13 +24,10 @@ public class DoYouWantToSaveChangesDialog extends ComponentDialog implements
 	 * base dialog constructor
 	 * @param app - see {@link AppW}
 	 * @param dialogData - contains trans keys for title and buttons
-	 * @param autoHide - if the dialog should be closed on click outside
-	 * @param hasScrim - background should be greyed out
 	 */
 	public DoYouWantToSaveChangesDialog(AppW app,
-			DialogData dialogData, boolean autoHide,
-			boolean hasScrim) {
-		super(app, dialogData, autoHide, hasScrim);
+			DialogData dialogData) {
+		super(app, dialogData, false, true);
 		addStyleName("saveDialogMow");
 		buildContent();
 		initActions();
@@ -100,12 +97,6 @@ public class DoYouWantToSaveChangesDialog extends ComponentDialog implements
 	@Override
 	public void setSaveType(Material.MaterialType saveType) {
 		app.getSaveController().setSaveType(saveType);
-	}
-
-	@Override
-	public void setLabels() {
-		// nothing to do here
-		// will be removed from interface with APPS-2066
 	}
 
 	@Override

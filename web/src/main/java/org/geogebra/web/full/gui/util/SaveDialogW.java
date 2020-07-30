@@ -249,7 +249,9 @@ public class SaveDialogW extends ComponentDialog implements PopupMenuHandler,
 
 	@Override
 	public void setDiscardMode() {
-		// could be useful
+		if (templateCheckbox != null) {
+			templateCheckbox.setVisible(false);
+		}
 	}
 
 	@Override
