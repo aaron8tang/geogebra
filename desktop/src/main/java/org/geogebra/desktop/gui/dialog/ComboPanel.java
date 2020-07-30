@@ -11,11 +11,14 @@ import javax.swing.JPanel;
 
 import org.geogebra.common.gui.SetLabels;
 import org.geogebra.common.gui.UpdateFonts;
+import org.geogebra.common.gui.dialog.options.model.CommonOptionsModel;
 import org.geogebra.common.gui.dialog.options.model.GeoComboListener;
 import org.geogebra.common.gui.dialog.options.model.MultipleOptionsModel;
+import org.geogebra.common.gui.dialog.options.model.OptionsModel;
 import org.geogebra.common.kernel.StringTemplate;
 import org.geogebra.common.kernel.geos.GeoElement;
 import org.geogebra.common.main.Localization;
+import org.geogebra.common.util.StringUtil;
 import org.geogebra.desktop.gui.properties.UpdateablePropertiesPanel;
 import org.geogebra.desktop.main.AppD;
 
@@ -29,7 +32,7 @@ class ComboPanel extends JPanel implements ActionListener,
 	private final Localization loc;
 	private JLabel label;
 	protected JComboBox comboBox;
-	private MultipleOptionsModel model;
+	private OptionsModel model;
 	private String title;
 	private AppD app;
 
@@ -41,19 +44,29 @@ class ComboPanel extends JPanel implements ActionListener,
 		comboBox = new JComboBox();
 
 		setLayout(new FlowLayout(FlowLayout.LEFT));
-		add(label);
+		if (hasLabel()) {
+			add(label);
+		}
+
 		add(comboBox);
 	}
 
 	@Override
 	public void setLabels() {
-		label.setText(loc.getMenu(getTitle()) + ":");
+		if (hasLabel()) {
+			label.setText(getTitle() + ":");
+		}
 
 		int selectedIndex = comboBox.getSelectedIndex();
 		comboBox.removeActionListener(this);
-
 		comboBox.removeAllItems();
-		getModel().fillModes(loc);
+		if (isCommonOptionsModel()) {
+			((CommonOptionsModel) model).fillModes(loc);
+		} else {
+			getMultipleModel().fillModes(loc);
+		}
+		comboBox.setSelectedIndex(selectedIndex);
+
 		if (selectedIndex < comboBox.getItemCount()) {
 			comboBox.setSelectedIndex(selectedIndex);
 		}
@@ -69,7 +82,7 @@ class ComboPanel extends JPanel implements ActionListener,
 
 		comboBox.removeActionListener(this);
 
-		getModel().updateProperties();
+		model.updateProperties();
 
 		comboBox.addActionListener(this);
 		return this;
@@ -78,9 +91,14 @@ class ComboPanel extends JPanel implements ActionListener,
 	@Override
 	public void updateFonts() {
 		Font font = app.getPlainFont();
-
-		label.setFont(font);
+		if (hasLabel()) {
+			label.setFont(font);
+		}
 		comboBox.setFont(font);
+	}
+
+	private boolean hasLabel() {
+		return !StringUtil.empty(title);
 	}
 
 	@Override
@@ -105,19 +123,28 @@ class ComboPanel extends JPanel implements ActionListener,
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == comboBox) {
-			model.applyChanges(comboBox.getSelectedIndex());
+			if (isCommonOptionsModel()) {
+				((CommonOptionsModel) model).applyChanges(
+						comboBox.getSelectedItem());
+			} else {
+				getMultipleModel().applyChanges(comboBox.getSelectedIndex());
+			}
 		}
+	}
+
+	protected boolean isCommonOptionsModel() {
+		return model instanceof CommonOptionsModel;
 	}
 
 	public JLabel getLabel() {
 		return label;
 	}
 
-	public MultipleOptionsModel getModel() {
-		return model;
+	public MultipleOptionsModel getMultipleModel() {
+		return (MultipleOptionsModel) model;
 	}
 
-	public void setModel(MultipleOptionsModel model) {
+	public void setModel(OptionsModel model) {
 		this.model = model;
 	}
 
@@ -147,5 +174,4 @@ class ComboPanel extends JPanel implements ActionListener,
 			addItem("");
 		}
 	}
-
 }
