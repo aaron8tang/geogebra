@@ -1520,12 +1520,13 @@ public class GeoText extends GeoElement
 		// only read content, no prefix
 	}
 
+	/**
+	 * @param geo element using this as dynamic caption
+	 */
 	public void registerUpdateListener(GeoElement geo) {
-		if (updateListeners.contains(geo)) {
-			return;
+		if (!updateListeners.contains(geo)) {
+			updateListeners.add(geo);
 		}
-
-		updateListeners.add(geo);
 	}
 
 	public void unregisterUpdateListener(GeoElement geo) {
