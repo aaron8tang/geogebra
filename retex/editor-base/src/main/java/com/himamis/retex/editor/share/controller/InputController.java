@@ -533,8 +533,7 @@ public class InputController {
 				.getArgument(editorState.getCurrentOffset() - 1);
 
 		if (last instanceof MathCharacter) {
-			MetaCharacter merge = metaModel
-					.merge(((MathCharacter) last).toString(), meta);
+			MetaCharacter merge = metaModel.merge(last.toString(), meta);
 			if (merge != null) {
 				editorState.getCurrentField().setArgument(
 						editorState.getCurrentOffset() - 1,
@@ -542,15 +541,26 @@ public class InputController {
 				return;
 			}
 		}
-		if (meta.getUnicode() == ' ') {
-			FunctionPower power = getFunctionPower(editorState);
-			if (formatConverter != null && formatConverter.isFunction(power.name)) {
+		FunctionPower power = getFunctionPower(editorState);
+		if (formatConverter != null && formatConverter.isFunction(power.name)) {
+			char unicode = meta.getUnicode();
+			if (unicode == ' ') {
 				newBraces(editorState, power, '(');
 				return;
+			} else if (metaModel.isForceBracketAfterFunction()
+					&& !isSuperOrSub(unicode)
+					&& (power.script != null
+						|| !formatConverter.isFunction(power.name + unicode))) {
+				newBraces(editorState, power, '(');
 			}
 		}
-		editorState.addArgument(new MathCharacter(meta));
 
+		editorState.addArgument(new MathCharacter(meta));
+	}
+
+	private static boolean isSuperOrSub(char unicode) {
+		return unicode == '^' || unicode == '_' || Unicode.isSuperscriptDigit(unicode)
+				|| unicode == Unicode.SUPERSCRIPT_MINUS;
 	}
 
 	/**
